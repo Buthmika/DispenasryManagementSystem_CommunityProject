@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/Buthmika/DispenasryManagementSystem_CommunityProject/blob/main/README.md
+    about: Check our README and guides for general information
+  - name: 🌿 Branching Guide
+    url: https://github.com/Buthmika/DispenasryManagementSystem_CommunityProject/blob/main/BRANCHING_GUIDE.md
+    about: Learn about our branching strategy and workflow
+  - name: 🤝 Contributing Guide
+    url: https://github.com/Buthmika/DispenasryManagementSystem_CommunityProject/blob/main/CONTRIBUTING.md
+    about: Read our contribution guidelines before submitting
