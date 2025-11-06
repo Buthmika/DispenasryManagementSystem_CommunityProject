@@ -6,7 +6,7 @@ import { RegisterComponent } from './Components/register/register';
   selector: 'app-root',
   imports: [RouterOutlet,RegisterComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
   protected readonly title = signal('dispenaryManagementSystem');
