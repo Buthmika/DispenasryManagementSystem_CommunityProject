@@ -1,5 +1,5 @@
 .patient-form {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -34,6 +34,7 @@
 .form-group {
   margin-bottom: 16px;
 
+
   label {
     display: block;
     margin-bottom: 6px;
@@ -42,7 +43,7 @@
   }
 
   .form-control {
-    width: 100%;
+    width: 90%;
     padding: 10px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -115,6 +116,8 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s;
+    align-items: center;
+    display: flex;
 
     &:disabled {
       opacity: 0.6;
@@ -123,7 +126,7 @@
   }
 
   .btn-primary {
-    background: #3498db;
+    background:linear-gradient(#2742A1,#4B97FF) ;
     color: white;
 
     &:hover:not(:disabled) {
@@ -153,9 +156,13 @@
 
   .form-actions {
     flex-direction: column-reverse;
+
+    
     
     .btn {
       width: 100%;
+      align-items: center;
+      
     }
   }
 }

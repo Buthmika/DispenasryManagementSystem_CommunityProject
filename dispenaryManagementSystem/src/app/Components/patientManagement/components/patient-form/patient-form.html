@@ -1,10 +1,10 @@
 <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="patient-form">
   <!-- Personal Information Section -->
-  <div class="form-section">
+  <div class="form-section" formGroupName="personalInfo">
     <h3>Personal Information</h3>
     
     <div class="form-row">
-      <div class="form-group">
+      <div class="form-group" [style.width.%]="75">
         <label for="fullName">Full Name *</label>
         <input 
           type="text" 
@@ -13,12 +13,14 @@
           class="form-control"
           [class.error]="isFieldInvalid('personalInfo.fullName')"
           placeholder="Enter patient's full name">
-        <div class="error-message" *ngIf="isFieldInvalid('personalInfo.fullName')">
-          {{ getFieldError('personalInfo.fullName') }}
-        </div>
+        @if (isFieldInvalid('personalInfo.fullName')) {
+          <div class="error-message">
+            {{ getFieldError('personalInfo.fullName') }}
+          </div>
+        }
       </div>
 
-      <div class="form-group">
+      <div class="form-group" [style.width.%]="50">
         <label for="gender">Gender *</label>
         <select 
           id="gender" 
@@ -26,18 +28,20 @@
           class="form-control"
           [class.error]="isFieldInvalid('personalInfo.gender')">
           <option value="">Select Gender</option>
-          <option *ngFor="let option of genderOptions" [value]="option.value">
-            {{ option.label }}
-          </option>
+          @for (option of genderOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
         </select>
-        <div class="error-message" *ngIf="isFieldInvalid('personalInfo.gender')">
-          {{ getFieldError('personalInfo.gender') }}
-        </div>
+        @if (isFieldInvalid('personalInfo.gender')) {
+          <div class="error-message">
+            {{ getFieldError('personalInfo.gender') }}
+          </div>
+        }
       </div>
     </div>
 
     <div class="form-row">
-      <div class="form-group">
+      <div class="form-group" [style.width.%]="50">
         <label for="age">Age *</label>
         <input 
           type="number" 
@@ -47,12 +51,14 @@
           [class.error]="isFieldInvalid('personalInfo.age')"
           placeholder="Enter age"
           min="0" max="120">
-        <div class="error-message" *ngIf="isFieldInvalid('personalInfo.age')">
-          {{ getFieldError('personalInfo.age') }}
-        </div>
+        @if (isFieldInvalid('personalInfo.age')) {
+          <div class="error-message">
+            {{ getFieldError('personalInfo.age') }}
+          </div>
+        }
       </div>
 
-      <div class="form-group">
+      <div class="form-group" [style.width.%]="50">
         <label for="phoneNumber">Phone Number *</label>
         <input 
           type="tel" 
@@ -61,13 +67,15 @@
           class="form-control"
           [class.error]="isFieldInvalid('personalInfo.phoneNumber')"
           placeholder="Enter phone number">
-        <div class="error-message" *ngIf="isFieldInvalid('personalInfo.phoneNumber')">
-          {{ getFieldError('personalInfo.phoneNumber') }}
-        </div>
+        @if (isFieldInvalid('personalInfo.phoneNumber')) {
+          <div class="error-message">
+            {{ getFieldError('personalInfo.phoneNumber') }}
+          </div>
+        }
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" [style.width.%]="50">
       <label for="dateOfBirth">Date of Birth *</label>
       <input 
         type="date" 
@@ -75,12 +83,14 @@
         formControlName="dateOfBirth"
         class="form-control"
         [class.error]="isFieldInvalid('personalInfo.dateOfBirth')">
-      <div class="error-message" *ngIf="isFieldInvalid('personalInfo.dateOfBirth')">
-        {{ getFieldError('personalInfo.dateOfBirth') }}
-      </div>
+      @if (isFieldInvalid('personalInfo.dateOfBirth')) {
+        <div class="error-message">
+          {{ getFieldError('personalInfo.dateOfBirth') }}
+        </div>
+      }
     </div>
 
-    <div class="form-group">
+    <div class="form-group" [style.width.%]="90">
       <label for="address">Address *</label>
       <textarea 
         id="address" 
@@ -89,8 +99,32 @@
         [class.error]="isFieldInvalid('personalInfo.address')"
         placeholder="Enter patient's address"
         rows="3"></textarea>
-      <div class="error-message" *ngIf="isFieldInvalid('personalInfo.address')">
-        {{ getFieldError('personalInfo.address') }}
+      @if (isFieldInvalid('personalInfo.address')) {
+        <div class="error-message">
+          {{ getFieldError('personalInfo.address') }}
+        </div>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="emergencyContact">Emergency Contact Name</label>
+        <input 
+          type="text" 
+          id="emergencyContact" 
+          formControlName="emergencyContact"
+          class="form-control"
+          placeholder="Emergency contact person name">
+      </div>
+
+      <div class="form-group">
+        <label for="emergencyPhone">Emergency Contact Phone</label>
+        <input 
+          type="tel" 
+          id="emergencyPhone" 
+          formControlName="emergencyPhone"
+          class="form-control"
+          placeholder="Emergency contact phone number">
       </div>
     </div>
   </div>
@@ -107,77 +141,85 @@
         class="form-control"
         [class.error]="isFieldInvalid('category')">
         <option value="">Select Category</option>
-        <option *ngFor="let option of categoryOptions" [value]="option.value">
-          {{ option.label }}
-        </option>
+        @for (option of categoryOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
       </select>
-      <div class="error-message" *ngIf="isFieldInvalid('category')">
-        {{ getFieldError('category') }}
-      </div>
+      @if (isFieldInvalid('category')) {
+        <div class="error-message">
+          {{ getFieldError('category') }}
+        </div>
+      }
     </div>
   </div>
 
   <!-- Pregnancy Details Section (Conditional) -->
-  <div class="form-section" *ngIf="showPregnancySection()" formGroupName="pregnancyDetails">
-    <h3>Pregnancy Details</h3>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label for="lmpDate">Last Menstrual Period (LMP) *</label>
-        <input 
-          type="date" 
-          id="lmpDate" 
-          formControlName="lmpDate"
-          class="form-control"
-          [class.error]="isFieldInvalid('pregnancyDetails.lmpDate')">
-        <div class="error-message" *ngIf="isFieldInvalid('pregnancyDetails.lmpDate')">
-          {{ getFieldError('pregnancyDetails.lmpDate') }}
+  @if (showPregnancySection()) {
+    <div class="form-section" formGroupName="pregnancyDetails">
+      <h3>Pregnancy Details</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lmpDate">Last Menstrual Period (LMP) *</label>
+          <input 
+            type="date" 
+            id="lmpDate" 
+            formControlName="lmpDate"
+            class="form-control"
+            [class.error]="isFieldInvalid('pregnancyDetails.lmpDate')">
+          @if (isFieldInvalid('pregnancyDetails.lmpDate')) {
+            <div class="error-message">
+              {{ getFieldError('pregnancyDetails.lmpDate') }}
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="edd">Expected Due Date (EDD) *</label>
+          <input 
+            type="date" 
+            id="edd" 
+            formControlName="edd"
+            class="form-control"
+            [class.error]="isFieldInvalid('pregnancyDetails.edd')">
+          @if (isFieldInvalid('pregnancyDetails.edd')) {
+            <div class="error-message">
+              {{ getFieldError('pregnancyDetails.edd') }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pregnancyWeek">Pregnancy Week</label>
+          <input 
+            type="number" 
+            id="pregnancyWeek" 
+            formControlName="pregnancyWeek"
+            class="form-control"
+            placeholder="Current week">
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="highRisk">
+            High Risk Pregnancy
+          </label>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="edd">Expected Due Date (EDD) *</label>
-        <input 
-          type="date" 
-          id="edd" 
-          formControlName="edd"
+        <label for="pregnancyNotes">Pregnancy Notes</label>
+        <textarea 
+          id="pregnancyNotes" 
+          formControlName="notes"
           class="form-control"
-          [class.error]="isFieldInvalid('pregnancyDetails.edd')">
-        <div class="error-message" *ngIf="isFieldInvalid('pregnancyDetails.edd')">
-          {{ getFieldError('pregnancyDetails.edd') }}
-        </div>
+          placeholder="Add pregnancy-related notes"
+          rows="3"></textarea>
       </div>
     </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="pregnancyWeek">Pregnancy Week</label>
-        <input 
-          type="number" 
-          id="pregnancyWeek" 
-          formControlName="pregnancyWeek"
-          class="form-control"
-          placeholder="Current week">
-      </div>
-
-      <div class="form-group checkbox-group">
-        <label class="checkbox-label">
-          <input type="checkbox" formControlName="highRisk">
-          High Risk Pregnancy
-        </label>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="pregnancyNotes">Pregnancy Notes</label>
-      <textarea 
-        id="pregnancyNotes" 
-        formControlName="notes"
-        class="form-control"
-        placeholder="Add pregnancy-related notes"
-        rows="3"></textarea>
-    </div>
-  </div>
+  }
 
   <!-- Medical Information Section -->
   <div class="form-section" formGroupName="medicalInfo">
@@ -191,9 +233,9 @@
           formControlName="bloodGroup"
           class="form-control">
           <option value="">Select Blood Group</option>
-          <option *ngFor="let option of bloodGroupOptions" [value]="option.value">
-            {{ option.label }}
-          </option>
+          @for (option of bloodGroupOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
         </select>
       </div>
     </div>
@@ -252,34 +294,8 @@
     </div>
   </div>
 
-  <!-- Emergency Contact Section -->
-  <div class="form-section">
-    <h3>Emergency Contact</h3>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label for="emergencyContact">Emergency Contact Name</label>
-        <input 
-          type="text" 
-          id="emergencyContact" 
-          formControlName="emergencyContact"
-          class="form-control"
-          placeholder="Emergency contact person name">
-      </div>
-
-      <div class="form-group">
-        <label for="emergencyPhone">Emergency Contact Phone</label>
-        <input 
-          type="tel" 
-          id="emergencyPhone" 
-          formControlName="emergencyPhone"
-          class="form-control"
-          placeholder="Emergency contact phone number">
-      </div>
-    </div>
-  </div>
-
   <!-- Form Actions -->
+   
   <div class="form-actions">
     <button 
       type="button" 
