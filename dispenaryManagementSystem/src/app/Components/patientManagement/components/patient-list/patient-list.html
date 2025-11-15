@@ -1,1 +1,208 @@
-<p>patient-list works!</p>
+<div class="patient-list-container">
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading patients...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !loading) {
+    <div class="error-state">
+      <div class="error-icon">⚠️</div>
+      <p>{{ error }}</p>
+      <button class="btn-retry" (click)="applyFilters()">Retry</button>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!loading && !error) {
+    <div class="patient-list-content">
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="search-box">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+            placeholder="Search by name, patient ID, or phone..."
+            class="search-input">
+        </div>
+
+        <div class="filter-controls">
+          <select [(ngModel)]="selectedCategory" (change)="applyFilters()" class="filter-select">
+            <option value="">All Categories</option>
+            @for (option of categoryOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+
+          <select [(ngModel)]="selectedGender" (change)="applyFilters()" class="filter-select">
+            <option value="">All Genders</option>
+            @for (option of genderOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+
+          <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="filter-select">
+            <option value="">All Status</option>
+            @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+
+          <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+        </div>
+      </div>
+
+      <!-- Results Summary -->
+      <div class="results-summary">
+        <span class="results-count">
+          Showing {{ filteredPatients.length }} of {{ patients.length }} patients
+        </span>
+      </div>
+
+      <!-- Patients Table -->
+      <div class="table-container">
+        <table class="patients-table">
+          <thead>
+            <tr>
+              <th (click)="onSort('patientId')" class="sortable">
+                Patient ID
+                @if (sortColumn === 'patientId') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th (click)="onSort('fullName')" class="sortable">
+                Name
+                @if (sortColumn === 'fullName') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th (click)="onSort('age')" class="sortable">
+                Age
+                @if (sortColumn === 'age') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th (click)="onSort('gender')" class="sortable">
+                Gender
+                @if (sortColumn === 'gender') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th (click)="onSort('category')" class="sortable">
+                Category
+                @if (sortColumn === 'category') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th>Contact</th>
+              <th (click)="onSort('lastVisitDate')" class="sortable">
+                Last Visit
+                @if (sortColumn === 'lastVisitDate') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th (click)="onSort('status')" class="sortable">
+                Status
+                @if (sortColumn === 'status') {
+                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (patient of filteredPatients; track patient.id) {
+              <tr (click)="onPatientSelect(patient.id)" class="patient-row">
+                <td class="patient-id">{{ patient.patientId }}</td>
+                <td class="patient-name">
+                  <div class="name-container">
+                    <span class="name">{{ patient.fullName }}</span>
+                    @if (getPregnancyBadge(patient)) {
+                      <span class="pregnancy-badge">{{ getPregnancyBadge(patient) }}</span>
+                    }
+                  </div>
+                </td>
+                <td class="patient-age">{{ patient.age }}</td>
+                <td class="patient-gender">{{ patient.gender }}</td>
+                <td>
+                  <span [class]="'category-badge ' + getCategoryClass(patient.category)">
+                    {{ patient.category }}
+                  </span>
+                </td>
+                <td class="patient-phone">{{ patient.phoneNumber }}</td>
+                <td class="last-visit">
+                  {{ patient.lastVisitDate ? (patient.lastVisitDate | date: 'MMM dd, yyyy') : 'Never' }}
+                </td>
+                <td>
+                  <span [class]="'status-badge ' + getStatusClass(patient.status)">
+                    {{ patient.status }}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button 
+                    class="btn-action btn-edit"
+                    (click)="onPatientEdit(patient.id, $event)"
+                    title="Edit Patient">
+                    ✏️
+                  </button>
+                  <button 
+                    class="btn-action btn-delete"
+                    (click)="onPatientDelete(patient.id, $event)"
+                    title="Delete Patient">
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            }
+            @empty {
+              <tr class="no-data">
+                <td colspan="9">
+                  <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>No patients found</p>
+                    @if (searchTerm || selectedCategory || selectedGender || selectedStatus) {
+                      <p class="empty-hint">Try adjusting your filters</p>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages > 1) {
+        <div class="pagination">
+          <button 
+            class="btn-pagination"
+            [disabled]="currentPage === 1"
+            (click)="onPageChange(currentPage - 1)">
+            Previous
+          </button>
+
+          <div class="page-numbers">
+            @for (page of pageNumbers; track page) {
+              <button 
+                [class]="'btn-page ' + (page === currentPage ? 'active' : '')"
+                (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+            }
+          </div>
+
+          <button 
+            class="btn-pagination"
+            [disabled]="currentPage === totalPages"
+            (click)="onPageChange(currentPage + 1)">
+            Next
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>
