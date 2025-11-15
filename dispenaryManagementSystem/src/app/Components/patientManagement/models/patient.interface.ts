@@ -29,7 +29,7 @@ export interface Patient {
 
   // Medical Information
   medicalInfo: {
-    bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+    bloodGroup?: any['A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'];
     allergies?: string[];
     chronicConditions?: string[];
     currentMedications?: string[];
