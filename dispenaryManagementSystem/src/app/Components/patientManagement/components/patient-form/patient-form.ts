@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Patient, CreatePatientRequest, UpdatePatientRequest } from '../../models/patient.interface';
 import { GENDER_OPTIONS, CATEGORY_OPTIONS, BLOOD_GROUP_OPTIONS } from '../../constants/patients.constants';
 import { PatientCategory } from '../../constants/patients.constants';
@@ -10,7 +10,7 @@ import { PatientCategory } from '../../constants/patients.constants';
   templateUrl: './patient-form.html',
   styleUrls: ['./patient-form.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIf,NgFor]
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class PatientFormComponent implements OnInit, OnChanges {
   @Input() patient?: Patient; // For edit mode
