@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PatientList, PatientFilter } from '../../models/patient.interface';
 import { PatientStatus, PatientCategory } from '../../constants/patients.constants';
 import { STATUS_OPTIONS, CATEGORY_OPTIONS, GENDER_OPTIONS } from '../../constants/patients.constants';
+import { SampleDataService } from '../../services/sample-data.service';
 
 @Component({
   selector: 'app-patient-list',
@@ -42,9 +43,37 @@ export class PatientListComponent implements OnInit {
   genderOptions = GENDER_OPTIONS;
   statusOptions = STATUS_OPTIONS;
 
+  //add sample data for testing
+  
+  private sampleDataService: SampleDataService;
+
+  constructor() {
+    this.sampleDataService = new SampleDataService();
+  }
+
   ngOnInit(): void {
+// Load sample data if no patients provided and sample data is enabled
+    if (this.loadSampleData && this.patients.length === 0) {
+      this.loadSampleData();
+    }
     this.applyFilters();
   }
+
+  ngOnDestroy(): void {
+    // Cleanup if needed
+  }
+
+  private loadSampleData(): void {
+    this.loading = true;
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      this.patients = this.sampleDataService.getSamplePatients();
+      this.loading = false;
+      this.applyFilters();
+    }, 1000);
+  }
+
 
   get filteredPatients(): PatientList[] {
     let filtered = this.patients;
