@@ -42,3 +42,9 @@ export const BLOOD_GROUP_OPTIONS = [
   { value: 'O+', label: 'O+' },
   { value: 'O-', label: 'O-' }
 ];
+
+export const STATUS_OPTIONS = [
+  { value: 'Active', label: 'Active', color: 'green' },
+  { value: 'Inactive', label: 'Inactive', color: 'gray' },
+  { value: 'Transferred', label: 'Transferred', color: 'orange' }
+];
