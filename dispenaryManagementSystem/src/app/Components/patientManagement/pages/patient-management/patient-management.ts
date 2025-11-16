@@ -5,13 +5,14 @@ import { PatientListComponent } from '../../components/patient-list/patient-list
 import { SideBar } from '../../../core/side-bar/side-bar';
 import { PatientList, PatientFilter } from '../../models/patient.interface';
 import { SampleDataService } from '../../services/sample-data.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-patient-management-page',
   templateUrl: './patient-management.html',
   styleUrls: ['./patient-management.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, PatientListComponent, SideBar]
+  imports: [CommonModule, RouterModule, PatientListComponent, SideBar, MatIconModule]
 })
 export class PatientManagementPageComponent implements OnInit {
   patients: PatientList[] = [];

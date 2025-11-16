@@ -17,12 +17,18 @@
             class="btn btn-secondary"
             (click)="refreshPatients()"
             [disabled]="loading">
-            🔄 Refresh
+            <div>
+                 <i class="material-icons">refresh</i>
+            </div>
+             Refresh
           </button>
           <button 
             class="btn btn-primary"
             (click)="navigateToAddPatient()">
-            + Add New Patient
+            <div>
+                 <i class="material-icons">add_circle</i> 
+            </div>
+            Add New Patient
           </button>
         </div>
       </div>
@@ -30,7 +36,9 @@
       <!-- Stats Cards -->
       <div class="stats-cards">
         <div class="stat-card">
-          <div class="stat-icon total-patients">👥</div>
+          <div class="stat-icon total-patients">
+            <i class="material-icons">group</i>
+          </div>
           <div class="stat-info">
             <div class="stat-number">{{ totalPatients }}</div>
             <div class="stat-label">Total Patients</div>
@@ -38,7 +46,9 @@
         </div>
 
         <div class="stat-card">
-          <div class="stat-icon pregnant-patients">🤰</div>
+          <div class="stat-icon total-patients">
+            <i class="material-icons">pregnant_woman</i>
+          </div>
           <div class="stat-info">
             <div class="stat-number">{{ pregnantPatients }}</div>
             <div class="stat-label">Pregnant Mothers</div>
@@ -46,7 +56,9 @@
         </div>
 
         <div class="stat-card">
-          <div class="stat-icon active-patients">✅</div>
+          <div class="stat-icon active-patients">
+             <i class="material-icons">check</i>
+          </div>
           <div class="stat-info">
             <div class="stat-number">{{ activePatients }}</div>
             <div class="stat-label">Active Patients</div>

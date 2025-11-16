@@ -93,7 +93,7 @@
 }
 
 .btn-primary {
-  background: #3498db;
+  background: linear-gradient(#2742A1,#4B97FF);
   color: white;
 
   &:hover:not(:disabled) {
@@ -124,7 +124,7 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background:  linear-gradient(#2742A1,#4B97FF);
   color: white;
   padding: 20px;
   border-radius: 8px;
