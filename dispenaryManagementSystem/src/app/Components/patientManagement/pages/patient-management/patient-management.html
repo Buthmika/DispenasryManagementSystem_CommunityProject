@@ -1,1 +1,71 @@
-<p>patient-management works!</p>
+<div class="patient-management-page">
+  <!-- Sidebar -->
+  <app-side-bar class="sidebar"></app-side-bar>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Patient Management</h1>
+          <p class="page-subtitle">Manage patient records, view medical history, and track patient visits</p>
+        </div>
+        
+        <div class="header-actions">
+          <button 
+            class="btn btn-secondary"
+            (click)="refreshPatients()"
+            [disabled]="loading">
+            🔄 Refresh
+          </button>
+          <button 
+            class="btn btn-primary"
+            (click)="navigateToAddPatient()">
+            + Add New Patient
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-icon total-patients">👥</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ totalPatients }}</div>
+            <div class="stat-label">Total Patients</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon pregnant-patients">🤰</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ pregnantPatients }}</div>
+            <div class="stat-label">Pregnant Mothers</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon active-patients">✅</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ activePatients }}</div>
+            <div class="stat-label">Active Patients</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+      <app-patient-list
+        [patients]="patients"
+        [loading]="loading"
+        [error]="error"
+        (patientSelected)="onPatientSelected($event)"
+        (patientEdit)="onPatientEdit($event)"
+        (patientDelete)="onPatientDelete($event)"
+        (filtersChanged)="onFiltersChanged($event)">
+      </app-patient-list>
+    </main>
+  </div>
+</div>
