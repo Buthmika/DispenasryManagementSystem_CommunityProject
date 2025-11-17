@@ -10,7 +10,7 @@
   <!-- Error State -->
   @if (error && !loading) {
     <div class="error-state">
-      <div class="error-icon">⚠️</div>
+      <div class="error-icon"><i class="material-icons">error</i></div>
       <p>{{ error }}</p>
       <button class="btn-retry" (click)="applyFilters()">Retry</button>
     </div>
@@ -145,15 +145,16 @@
                 <td class="actions">
                   <button 
                     class="btn-action btn-edit"
-                    (click)="onPatientEdit(patient.id, $event)"
+                    (click)="onPatientEdit(patient.id, $event)" 
                     title="Edit Patient">
-                    ✏️
+                    
+                       <i class="material-icons">edit</i>
                   </button>
                   <button 
                     class="btn-action btn-delete"
                     (click)="onPatientDelete(patient.id, $event)"
                     title="Delete Patient">
-                    🗑️
+                        <i class="material-icons">delete</i>
                   </button>
                 </td>
               </tr>
