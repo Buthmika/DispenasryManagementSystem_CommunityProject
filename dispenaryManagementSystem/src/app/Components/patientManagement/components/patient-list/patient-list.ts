@@ -5,13 +5,14 @@ import { PatientList, PatientFilter } from '../../models/patient.interface';
 import { PatientStatus, PatientCategory } from '../../constants/patients.constants';
 import { STATUS_OPTIONS, CATEGORY_OPTIONS, GENDER_OPTIONS } from '../../constants/patients.constants';
 import { SampleDataService } from '../../services/sample-data.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.html',
   styleUrls: ['./patient-list.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, MatIconModule]
 })
 export class PatientListComponent implements OnInit {
   @Input() patients: PatientList[] = [];
