@@ -109,7 +109,7 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 600;
 
       &:hover {
         background: linear-gradient(#4B97FF,#2742A1);
