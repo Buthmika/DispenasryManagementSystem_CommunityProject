@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
-<<<<<<< Updated upstream
-import { LoginComponent } from './login.component';
+import { LoginComponent } from './Components/login/login';
+import { RegisterComponent } from './Components/register/register';
+import { PatientFormComponent } from './Components/patientManagement/components/patient-form/patient-form';
+import { PatientListComponent } from './Components/patientManagement/components/patient-list/patient-list';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
-	{ path: 'login', component: LoginComponent }
-=======
-import { RegisterComponent } from './auth/register/register';
+	{ path: 'login', component: LoginComponent },
+	{ path: 'register', component: RegisterComponent },
+	{path:'patientForm', component: PatientFormComponent},
+	{path:'patientList', component: PatientListComponent}
 
-export const routes: Routes = [
-  { path: 'register', component: RegisterComponent }
->>>>>>> Stashed changes
 ];
