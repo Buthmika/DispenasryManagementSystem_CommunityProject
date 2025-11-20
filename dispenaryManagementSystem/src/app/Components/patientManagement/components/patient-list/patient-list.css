@@ -63,8 +63,8 @@
   align-items: center;
 
   .search-box {
-    margin-bottom: 16px;
-    width: 400px;
+    
+    width: 300px;
 
     .search-input {
       width: 100%;
@@ -109,7 +109,7 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 600;
 
       &:hover {
         background: linear-gradient(#4B97FF,#2742A1);

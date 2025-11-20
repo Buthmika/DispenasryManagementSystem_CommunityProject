@@ -5,7 +5,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-side-bar',
-  imports: [MatIconModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './side-bar.html',
   styleUrls: ['./side-bar.css'],
 })
