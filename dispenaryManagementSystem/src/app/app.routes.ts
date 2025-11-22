@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './Components/login/login';
 import { RegisterComponent } from './Components/register/register';
+import { DoctorDashboardComponent } from './Components/doctorDashboard/doctorDashboard'; 
 
 export const routes: Routes = [
-	{ path: '', redirectTo: 'login', pathMatch: 'full' },
-	{ path: 'login', component: LoginComponent },
-	{ path: 'register', component: RegisterComponent }
+  { path: '', redirectTo: '/login', pathMatch: 'full' }, 
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'doctorDashboard', component: DoctorDashboardComponent }
 ];
