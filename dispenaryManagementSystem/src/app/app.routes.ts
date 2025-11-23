@@ -5,6 +5,7 @@ import { PatientFormComponent } from './Components/patientManagement/components/
 import { PatientListComponent } from './Components/patientManagement/components/patient-list/patient-list';
 import { SideBar } from './Components/core/side-bar/side-bar';
 import { PatientManagementPageComponent } from './Components/patientManagement/pages/patient-management/patient-management';
+import { AddPatientComponent } from './Components/patientManagement/pages/add-patient/add-patient';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,6 +14,7 @@ export const routes: Routes = [
 	{path:'patientForm', component: PatientFormComponent},
 	{path:'patientList', component: PatientListComponent},
 	{path:'sidebar',component: SideBar},
-	{path:'patient-management', component: PatientManagementPageComponent}
+	{path:'patient-management', component: PatientManagementPageComponent},
+	{path:'add-patient', component: AddPatientComponent}
 
 ];
