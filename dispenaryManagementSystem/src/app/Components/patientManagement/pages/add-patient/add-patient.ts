@@ -79,7 +79,7 @@ export class AddPatientComponent implements OnInit {
         
         // Navigate back to patient list after success
         setTimeout(() => {
-          this.router.navigate(['/patients']);
+          this.router.navigate(['/patient-management']);
         }, 1500);
         
       } catch (err) {
