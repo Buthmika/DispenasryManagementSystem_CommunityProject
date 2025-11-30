@@ -1,1 +1,140 @@
-<p>patient-profile works!</p>
+<div class="patient-profile-page">
+  <!-- Sidebar -->
+  <app-side-bar class="sidebar"></app-side-bar>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="breadcrumb">
+        @for (item of getBreadcrumbItems(); track item.label; let last = $last) {
+          <span class="breadcrumb-item">
+            @if (item.route && !last) {
+              <a [routerLink]="item.route" class="breadcrumb-link">{{ item.label }}</a>
+              <span class="breadcrumb-separator">/</span>
+            } @else {
+              <span class="breadcrumb-current">{{ item.label }}</span>
+            }
+          </span>
+        }
+      </div>
+      
+      <div class="header-content">
+        <div class="patient-header">
+          @if (patient) {
+            <div class="patient-avatar">
+              <div class="avatar-placeholder">
+                 {{ getInitials(patient.personalInfo.fullName) }}
+              </div>
+              @if (isPregnantPatient) {
+                <div class="pregnancy-indicator" title="Pregnant Mother">🤰</div>
+              }
+            </div>
+            
+            <div class="patient-info">
+              <h1 class="patient-name">{{ patient.personalInfo.fullName }}</h1>
+              <div class="patient-details">
+                <span class="patient-id">ID: {{ patient.patientId }}</span>
+                <span class="patient-category {{ patient.category.toLowerCase().replace(' ', '-') }}">
+                  {{ patient.category }}
+                </span>
+                <span class="patient-status {{ patient.status.toLowerCase() }}">
+                  {{ patient.status }}
+                </span>
+              </div>
+              <div class="patient-meta">
+                <span>Age: {{ patient.personalInfo.age }}</span>
+                <span>•</span>
+                <span>Gender: {{ patient.personalInfo.gender }}</span>
+                <span>•</span>
+                <span>Phone: {{ patient.personalInfo.phoneNumber }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="header-actions">
+          <button 
+            class="btn btn-secondary"
+            (click)="navigateToPatientList()">
+            ← Back to Patients
+          </button>
+          <button 
+            class="btn btn-primary"
+            (click)="navigateToEdit()"
+            [disabled]="!patient">
+            ✏️ Edit Patient
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading patient data...</p>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error && !loading) {
+      <div class="error-state">
+        <div class="error-icon">⚠️</div>
+        <div class="error-content">
+          <h3>Error Loading Patient</h3>
+          <p>{{ error }}</p>
+        </div>
+        <div class="error-actions">
+          <button class="btn btn-secondary" (click)="navigateToPatientList()">Back to Patients</button>
+          <button class="btn btn-primary" (click)="loadPatient()">Retry</button>
+        </div>
+      </div>
+    }
+
+    <!-- Main Content -->
+    @if (patient && !loading) {
+      <main class="profile-content">
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+          @for (tab of tabs; track tab.id) {
+            <button 
+              class="tab-button {{ activeTab === tab.id ? 'active' : '' }}"
+              (click)="setActiveTab(tab.id)">
+              <span class="tab-icon">{{ tab.icon }}</span>
+              <span class="tab-label">{{ tab.label }}</span>
+            </button>
+          }
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Overview Tab -->
+          @if (activeTab === 'overview') {
+            <!--<app-patient-overview [patient]="patient"></app-patient-overview>-->
+          }
+
+          <!-- Medical History Tab -->
+          @if (activeTab === 'medical-history') {
+            <!--<app-medical-history [patient]="patient"></app-medical-history>-->
+          }
+
+          <!-- Visits Tab -->
+          @if (activeTab === 'visits') {
+           <!-- <app-visits-timeline [patient]="patient"></app-visits-timeline>-->
+          }
+
+          <!-- Documents Tab -->
+          @if (activeTab === 'documents') {
+            <!--<app-documents [patient]="patient"></app-documents>-->
+          }
+
+          <!-- Pregnancy Care Tab (Conditional) -->
+          @if (activeTab === 'pregnancy' && isPregnantPatient) {
+            <!--<app-pregnancy-care [patient]="patient"></app-pregnancy-care>-->
+          }
+        </div>
+      </main>
+    }
+  </div>
+</div>
