@@ -1,0 +1,106 @@
+<div class="inventory-layout">
+  <app-side-bar></app-side-bar>
+  <div class="page-bg">
+    <div class="inventory-wrapper">
+
+    <div class="inventory-header">
+      <h1 class="page-title">Pharmacy &amp; Inventory</h1>
+
+      <div class="header-controls">
+        <div class="search-group">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L15.8 15.8" stroke="#9AA7B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="11" r="6" stroke="#9AA7B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search medicine"
+            [(ngModel)]="searchTerm"
+            (input)="searchMedicine()"
+            class="search-input"
+          />
+        </div>
+
+        <button class="report-btn" (click)="generateDrugsReport()">Generate Drugs Report</button>
+      </div>
+    </div>
+
+    <div class="inventory-card">
+      <div class="status-filter-row">
+        <button type="button" class="clear-filters-btn" (click)="clearFilters()">Clear Filters</button>
+        <select [(ngModel)]="selectedStatus" (change)="updateFilteredMedicines()" class="status-dropdown">
+          <option value="All">All ({{ medicines.length }})</option>
+          <option value="In Stock">In Stock ({{ inStockCount }})</option>
+          <option value="Low of Stock">Low of Stock ({{ lowStockCount }})</option>
+          <option value="Out of Stock">Out of Stock ({{ outOfStockCount }})</option>
+        </select>
+        <div style="margin-left:auto; display:flex; gap:12px; align-items:center;">
+          <button class="add-new-btn" (click)="openAddModal()">+ Add New Medicine</button>
+        </div>
+      </div>
+      <table class="inventory-table">
+        <thead>
+          <tr>
+            <th>MEDICINE NAME</th>
+            <th>QUANTITY</th>
+            <th>EXPIRY DATE</th>
+            <th>STATUS</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let med of filteredMedicines; let i = index">
+            <td class="med-name">{{ med.medicineName }}</td>
+            <td class="qty">{{ med.quantity }}</td>
+            <td class="exp">{{ med.expiryDate }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(med.status)">{{ med.status }}</span>
+            </td>
+            <td class="action-col"><a (click)="editMedicine(med)">Edit</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Modal (add / edit) -->
+  <div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit Medicine' : 'Add New Medicine' }}</h3>
+      </div>
+      <form [formGroup]="medicineForm" class="modal-form">
+        <div class="form-row">
+          <label>Medicine Name</label>
+          <input type="text" formControlName="medicineName" />
+        </div>
+        <div class="form-row">
+          <label>Quantity</label>
+          <input type="number" formControlName="quantity" />
+        </div>
+        <div class="form-row">
+          <label>Expiry Date</label>
+          <input type="date" formControlName="expiryDate" />
+        </div>
+        <div class="form-row">
+          <label>Status</label>
+          <select formControlName="status">
+            <option value="In Stock">In Stock</option>
+            <option value="Low of Stock">Low of Stock</option>
+            <option value="Out of Stock">Out of Stock</option>
+          </select>
+        </div>
+        
+
+        <div class="modal-actions">
+          <button type="button" class="save-btn" (click)="saveMedicine()">Save</button>
+          <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+          <button type="button" class="delete-btn" *ngIf="isEditMode" (click)="deleteFromModal()">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+    </div>
+</div>
