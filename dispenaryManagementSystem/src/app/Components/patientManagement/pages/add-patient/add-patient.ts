@@ -93,13 +93,13 @@ export class AddPatientComponent implements OnInit {
 
   onFormCancel(): void {
     // Navigate back to patient list
-    this.router.navigate(['/patients']);
+    this.router.navigate(['/patient-management']);
   }
 
   getBreadcrumbItems(): { label: string, route?: string }[] {
     return [
       { label: 'Dashboard', route: '/dashboard' },
-      { label: 'Patient Management', route: '/patients' },
+      { label: 'Patient Management', route: '/patient-management' },
       { label: this.pageTitle }
     ];
   }
