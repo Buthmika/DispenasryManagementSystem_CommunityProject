@@ -6,6 +6,8 @@ import { PatientListComponent } from './Components/patientManagement/components/
 import { SideBar } from './Components/core/side-bar/side-bar';
 import { PatientManagementPageComponent } from './Components/patientManagement/pages/patient-management/patient-management';
 import { AddPatientComponent } from './Components/patientManagement/pages/add-patient/add-patient';
+import { DoctorDashboardComponent } from './Components/doctorDashboard/doctorDashboard';
+import { PatientProfileComponent } from './Components/patientManagement/pages/patient-profile/patient-profile';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,6 +17,8 @@ export const routes: Routes = [
 	{path:'patientList', component: PatientListComponent},
 	{path:'sidebar',component: SideBar},
 	{path:'patient-management', component: PatientManagementPageComponent},
-	{path:'add-patient', component: AddPatientComponent}
+	{path:'add-patient', component: AddPatientComponent},
+	{path:'dashboard',component: DoctorDashboardComponent},
+	{path: 'patient-profile/:id', component: PatientProfileComponent }
 
 ];
