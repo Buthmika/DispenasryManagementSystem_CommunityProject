@@ -1,0 +1,104 @@
+<div class="add-patient-page">
+  <!-- Sidebar -->
+  <app-side-bar class="sidebar"></app-side-bar>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="breadcrumb">
+        @for (item of getBreadcrumbItems(); track item.label; let last = $last) {
+          <span class="breadcrumb-item">
+            @if (item.route && !last) {
+              <a [routerLink]="item.route" class="breadcrumb-link">{{ item.label }}</a>
+              <span class="breadcrumb-separator">/</span>
+            } @else {
+              <span class="breadcrumb-current">{{ item.label }}</span>
+            }
+          </span>
+        }
+      </div>
+      
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">{{ pageTitle }}</h1>
+          <p class="page-subtitle">
+            {{ isEditMode ? 
+              'Update patient information and medical details.' : 
+              'Enter patient information to create a new patient record.' 
+            }}
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <button 
+            class="btn btn-secondary"
+            (click)="onFormCancel()">
+            ← Back to Patients
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Success Message -->
+    @if (successMessage) {
+      <div class="success-message">
+        <div class="success-icon">✅</div>
+        <div class="success-content">
+          <h3>Success!</h3>
+          <p>{{ successMessage }}</p>
+          <p class="redirect-message">Redirecting to patient list...</p>
+        </div>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (loading && isEditMode && !patient) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading patient data...</p>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error) {
+      <div class="error-state">
+        <div class="error-icon">⚠️</div>
+        <div class="error-content">
+          <h3>Error</h3>
+          <p>{{ error }}</p>
+        </div>
+        <div class="error-actions">
+          <button class="btn btn-secondary" (click)="onFormCancel()">Go Back</button>
+          @if (isEditMode) {
+            <button class="btn btn-primary" (click)="loadPatientForEdit(patient?.id || '')">Retry</button>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Main Form Content -->
+    @if ((!isEditMode || patient) && !loading && !error && !successMessage) {
+      <main class="content-area">
+        <div class="form-container">
+          <app-patient-form
+            [patient]="patient || undefined"
+            [isEditMode]="isEditMode"
+            (formSubmit)="onFormSubmit($event)"
+            (formCancel)="onFormCancel()">
+          </app-patient-form>
+        </div>
+      </main>
+    }
+
+    <!-- Form Submission Loading -->
+    @if (loading && !isEditMode) {
+      <div class="submission-overlay">
+        <div class="submission-loading">
+          <div class="spinner"></div>
+          <p>{{ isEditMode ? 'Updating patient...' : 'Creating patient...' }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>
