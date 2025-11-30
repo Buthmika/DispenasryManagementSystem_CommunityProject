@@ -1,0 +1,117 @@
+<div class="dashboard-container">
+  
+  <aside class="sidebar">
+    <div class="sidebar-top">
+     <div class="logo">
+ <img src="assets/images/Vector (1).png" alt="ClinicPlus Logo" class="logo-image">
+  
+  <span class="logo-text">ClinicPlus</span>
+</div>
+
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a routerLink="/doctorDashboard" routerLinkActive="active">
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/patient-management" routerLinkActive="active">
+              <span class="material-symbols-outlined">group</span>
+              <span>Patient Management</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/pharmacy" routerLinkActive="active">
+              <span class="material-symbols-outlined">local_pharmacy</span>
+              <span>Pharmacy & Inventory</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/reports" routerLinkActive="active">
+              <span class="material-symbols-outlined">analytics</span>
+              <span>Reports & Analytics</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/settings" routerLinkActive="active">
+              <span class="material-symbols-outlined">settings</span>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="help-box">
+        <p>Need Help?</p>
+        <span>Contact our support team.</span>
+        <button class="btn btn-support">Contact Support</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    <header class="header">
+      <div class="header-greeting">
+        <h3>Welcome, Dr. Indika</h3>
+        <p>Here's your dashboard overview.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <div class="user-profile">
+          <img src="https://placehold.co/40x40/E2E8F0/334155?text=DI" alt="Dr. Indika Uvanpriya">
+          <div class="user-details">
+            <strong>Dr. Indika Uvanpriya</strong>
+            <span>Specialist</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="alert-banner">
+      <div class="alert-icon">
+        <span class="material-symbols-outlined">notifications_active</span>
+      </div>
+      <div class="alert-text">
+        <strong>Low Stock Alert</strong>
+        <p>Multiple items in your inventory are running low.</p>
+      </div>
+      <button class="btn btn-primary-clinic">View Inventory</button>
+    </section>
+
+    <section class="main-cards">
+      
+      <div class="card blue-gradient-card">
+        <div class="card-icon-container-gradient">
+          <span class="material-symbols-outlined">analytics</span>
+        </div>
+        <h4>Reports & Analytics</h4>
+        <p>View patient data, pharmacy sales, and performance metrics.</p>
+      </div>
+
+      <div class="card white-card">
+        <div class="card-icon-container-white">
+          <span class="material-symbols-outlined">group</span>
+        </div>
+        <h4>Patient Management</h4>
+        <p>Access patient records, appointments, and communication.</p>
+      </div>
+
+     <div class="card blue-gradient-card">
+  <div class="card-icon-container-gradient">
+    <span class="material-symbols-outlined">local_pharmacy</span>
+  </div>
+  <h4>Pharmacy & Inventory</h4>
+  <p>Manage stock levels, prescriptions, and supplier orders.</p>
+</div>
+
+    </section>
+
+  </main>
+</div>
