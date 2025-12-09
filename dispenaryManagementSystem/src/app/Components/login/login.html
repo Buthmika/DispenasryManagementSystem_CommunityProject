@@ -6,20 +6,22 @@
       <h2>Login to Your Account</h2>
     </div>
 
-    <form>
-     
+    <form (ngSubmit)="onLogin()">
+      <div *ngIf="errorMessage" class="error-message" style="color: red; margin-bottom: 10px; padding: 10px; background-color: #ffebee; border-radius: 4px;">
+        {{ errorMessage }}
+      </div>
 
       <div class="input-group">
         <label>User Name</label>
-        <input type="text" placeholder="Enter your user name">
+        <input type="text" placeholder="Enter your user name" [(ngModel)]="email" name="email" required>
       </div>
 
       <div class="input-group">
         <label>Password</label>
-        <input type="password" placeholder="Enter your password">
+        <input type="password" placeholder="Enter your password" [(ngModel)]="password" name="password" required>
       </div>
 
-      <button class="btn-submit">Log in</button>
+      <button type="submit" class="btn-submit" [disabled]="isLoading">{{ isLoading ? 'Logging in...' : 'Log in' }}</button>
     </form>
 
     <!-- <div class="divider">
