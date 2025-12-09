@@ -57,7 +57,7 @@
     
     <header class="header">
       <div class="header-greeting">
-        <h3>Welcome, Dr. Indika</h3>
+        <h3>Welcome, {{ doctorName }}</h3>
         <p>Here's your dashboard overview.</p>
       </div>
       <div class="header-actions">
@@ -65,10 +65,10 @@
           <span class="material-symbols-outlined">notifications</span>
         </button>
         <div class="user-profile">
-          <img src="https://placehold.co/40x40/E2E8F0/334155?text=DI" alt="Dr. Indika Uvanpriya">
+          <img src="https://placehold.co/40x40/E2E8F0/334155?text=DR" alt="{{ doctorName }}">
           <div class="user-details">
-            <strong>Dr. Indika Uvanpriya</strong>
-            <span>Specialist</span>
+            <strong>{{ doctorName }}</strong>
+            <span>{{ doctorEmail }}</span>
           </div>
         </div>
       </div>
