@@ -84,7 +84,7 @@ export class PatientManagementPageComponent implements OnInit {
   }
 
   navigateToAddPatient(): void {
-    this.router.navigate(['/patients/add']);
+    this.router.navigate(['/add-patient']);
   }
 
   refreshPatients(): void {

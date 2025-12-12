@@ -8,6 +8,7 @@ import { PatientManagementPageComponent } from './Components/patientManagement/p
 import { AddPatientComponent } from './Components/patientManagement/pages/add-patient/add-patient';
 import { DoctorDashboardComponent } from './Components/doctorDashboard/doctorDashboard';
 import { AuthGuard } from './guards/auth.guard';
+import { Inventory } from './Components/inventory/inventory';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,6 +19,7 @@ export const routes: Routes = [
 	{path:'sidebar',component: SideBar, canActivate: [AuthGuard]},
 	{path:'patient-management', component: PatientManagementPageComponent, canActivate: [AuthGuard]},
 	{path:'add-patient', component: AddPatientComponent, canActivate: [AuthGuard]},
-	{path:'doctor-dashboard', component: DoctorDashboardComponent, canActivate: [AuthGuard]}
-
+	{path:'doctor-dashboard', component: DoctorDashboardComponent, canActivate: [AuthGuard]},
+	{path:'inventory', component: Inventory, canActivate: [AuthGuard]}
+	
 ];

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { SideBar } from '../Components/core/side-bar/side-bar';
+import { SideBar } from '../core/side-bar/side-bar';
 interface Medicine {
   id?: number;
   medicineName: string;
@@ -14,6 +14,7 @@ interface Medicine {
 
 @Component({
   selector: 'app-inventory',
+  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterOutlet, SideBar],
   templateUrl: './inventory.html',
   styleUrl: './inventory.css',
