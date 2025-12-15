@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { PatientFormComponent } from '../../components/patient-form/patient-form';
 import { SideBar } from '../../../core/side-bar/side-bar';
 import { CreatePatientRequest, UpdatePatientRequest, Patient } from '../../models/patient.interface';
-import { SampleDataService } from '../../services/sample-data.service';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'app-add-patient',
@@ -24,7 +24,7 @@ export class AddPatientComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private sampleDataService: SampleDataService
+    private patientService: PatientService
   ) {}
 
   ngOnInit(): void {
@@ -41,65 +41,104 @@ export class AddPatientComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Simulate API call with sample data
-    setTimeout(() => {
-      try {
-        const patient = this.sampleDataService.getSampleFullPatient(patientId);
-        if (patient) {
-          this.patient = patient;
-        } else {
-          this.error = 'Patient not found';
-        }
-      } catch (err) {
-        this.error = 'Error loading patient data';
-        console.error('Error loading patient:', err);
-      } finally {
-        this.loading = false;
+    try {
+      const patients = this.patientService.getPatients();
+      const patientData = patients.find(p => p.id === patientId);
+      if (patientData) {
+        // Convert PatientList to Patient format
+        this.patient = {
+          id: patientData.id,
+          patientId: patientData.patientId,
+          personalInfo: {
+            fullName: patientData.fullName,
+            age: patientData.age,
+            dateOfBirth: '',
+            gender: patientData.gender as 'Male' | 'Female' | 'Other',
+            phoneNumber: patientData.phoneNumber,
+            address: '',
+            emergencyContact: '',
+            emergencyPhone: ''
+          },
+          category: patientData.category as any,
+          medicalInfo: {
+            allergies: [],
+            chronicConditions: [],
+            currentMedications: []
+          },
+          status: patientData.status as any,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          createdBy: '',
+          lastVisitDate: patientData.lastVisitDate
+        };
+      } else {
+        this.error = 'Patient not found';
       }
-    }, 1000);
+    } catch (err) {
+      this.error = 'Error loading patient data';
+      console.error('Error loading patient:', err);
+    } finally {
+      this.loading = false;
+    }
   }
 
-  onFormSubmit(patientData: CreatePatientRequest | UpdatePatientRequest): void {
+  async onFormSubmit(patientData: CreatePatientRequest | UpdatePatientRequest): Promise<void> {
     console.log('Form submitted:', patientData);
     
-    // Simulate API call
     this.loading = true;
     this.error = null;
     this.successMessage = null;
 
-    setTimeout(() => {
-      try {
-        if (this.isEditMode) {
-          console.log('Updating patient:', this.patient?.id, patientData);
-          this.successMessage = 'Patient updated successfully!';
-        } else {
-          console.log('Creating new patient:', patientData);
-          this.successMessage = 'Patient created successfully!';
+    try {
+      if (this.isEditMode && this.patient) {
+        await this.patientService.updatePatient(this.patient.id, patientData);
+        this.successMessage = 'Patient updated successfully!';
+      } else {
+        // Convert CreatePatientRequest to PatientList format for saving
+        const createData = patientData as CreatePatientRequest;
+        
+        if (!createData.personalInfo) {
+          throw new Error('Personal information is required');
         }
         
-        // Navigate back to patient list after success
-        setTimeout(() => {
-          this.router.navigate(['/patients']);
-        }, 1500);
+        const newPatient = {
+          patientId: '', // Will be auto-generated
+          fullName: createData.personalInfo.fullName,
+          age: createData.personalInfo.age,
+          gender: createData.personalInfo.gender,
+          category: createData.category,
+          phoneNumber: createData.personalInfo.phoneNumber,
+          lastVisitDate: new Date().toISOString(),
+          status: 'Active' as const,
+          isPregnant: createData.pregnancyDetails?.isPregnant || false
+        };
         
-      } catch (err) {
-        this.error = this.isEditMode ? 'Error updating patient' : 'Error creating patient';
-        console.error('Form submission error:', err);
-      } finally {
-        this.loading = false;
+        await this.patientService.addPatient(newPatient);
+        this.successMessage = 'Patient created successfully!';
       }
-    }, 1500);
+      
+      // Navigate back to patient management after success
+      setTimeout(() => {
+        this.router.navigate(['/patient-management']);
+      }, 1500);
+      
+    } catch (err) {
+      this.error = this.isEditMode ? 'Error updating patient' : 'Error creating patient';
+      console.error('Form submission error:', err);
+    } finally {
+      this.loading = false;
+    }
   }
 
   onFormCancel(): void {
-    // Navigate back to patient list
-    this.router.navigate(['/patients']);
+    // Navigate back to patient management
+    this.router.navigate(['/patient-management']);
   }
 
   getBreadcrumbItems(): { label: string, route?: string }[] {
     return [
-      { label: 'Dashboard', route: '/dashboard' },
-      { label: 'Patient Management', route: '/patients' },
+      { label: 'Dashboard', route: '/doctor-dashboard' },
+      { label: 'Patient Management', route: '/patient-management' },
       { label: this.pageTitle }
     ];
   }

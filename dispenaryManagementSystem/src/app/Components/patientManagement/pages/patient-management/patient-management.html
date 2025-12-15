@@ -70,7 +70,7 @@
     <!-- Main Content Area -->
     <main class="content-area">
       <app-patient-list
-        [patients]="patients"
+        [patients]="filteredPatients"
         [loading]="loading"
         [error]="error"
         (patientSelected)="onPatientSelected($event)"

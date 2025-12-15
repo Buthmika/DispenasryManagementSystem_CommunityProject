@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { PatientListComponent } from '../../components/patient-list/patient-list';
 import { SideBar } from '../../../core/side-bar/side-bar';
 import { PatientList, PatientFilter } from '../../models/patient.interface';
-import { SampleDataService } from '../../services/sample-data.service';
+import { PatientService } from '../../services/patient.service';
 import { MatIconModule } from '@angular/material/icon';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-patient-management-page',
@@ -14,8 +15,9 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [CommonModule, RouterModule, PatientListComponent, SideBar, MatIconModule]
 })
-export class PatientManagementPageComponent implements OnInit {
+export class PatientManagementPageComponent implements OnInit, OnDestroy {
   patients: PatientList[] = [];
+  filteredPatients: PatientList[] = [];
   loading: boolean = false;
   error: string | null = null;
   
@@ -24,37 +26,47 @@ export class PatientManagementPageComponent implements OnInit {
   pregnantPatients: number = 0;
   activePatients: number = 0;
 
+  private patientsSubscription?: Subscription;
+
   constructor(
     private router: Router,
-    private sampleDataService: SampleDataService
+    private patientService: PatientService
   ) {}
 
   ngOnInit(): void {
     this.loadPatients();
   }
 
+  ngOnDestroy(): void {
+    if (this.patientsSubscription) {
+      this.patientsSubscription.unsubscribe();
+    }
+  }
+
   private loadPatients(): void {
     this.loading = true;
     this.error = null;
 
-    // Simulate API call
-    setTimeout(() => {
-      try {
-        this.patients = this.sampleDataService.getSamplePatients();
+    this.patientsSubscription = this.patientService.patients$.subscribe({
+      next: (patients) => {
+        this.patients = patients;
+        this.filteredPatients = patients;
         this.calculateStats();
-      } catch (err) {
+        this.loading = false;
+      },
+      error: (err) => {
         this.error = 'Failed to load patients';
         console.error('Error loading patients:', err);
-      } finally {
         this.loading = false;
       }
-    }, 1000);
+    });
   }
 
   private calculateStats(): void {
-    this.totalPatients = this.patients.length;
-    this.pregnantPatients = this.patients.filter(p => p.isPregnant).length;
-    this.activePatients = this.patients.filter(p => p.status === 'Active').length;
+    const stats = this.patientService.getStatistics();
+    this.totalPatients = stats.total;
+    this.pregnantPatients = stats.pregnant;
+    this.activePatients = stats.active;
   }
 
   onPatientSelected(patientId: string): void {
@@ -68,26 +80,44 @@ export class PatientManagementPageComponent implements OnInit {
     this.router.navigate(['/patients/edit', patientId]);
   }
 
-  onPatientDelete(patientId: string): void {
-    console.log('Delete patient:', patientId);
-    // In a real app, you would call a service to delete the patient
-    // For now, we'll just remove from the local array
-    this.patients = this.patients.filter(p => p.id !== patientId);
-    this.calculateStats();
-    alert(`Patient ${patientId} deleted successfully!`);
+  async onPatientDelete(patientId: string): Promise<void> {
+    if (confirm('Are you sure you want to delete this patient?')) {
+      try {
+        this.loading = true;
+        await this.patientService.deletePatient(patientId);
+        alert('Patient deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting patient:', error);
+        alert('Failed to delete patient. Please try again.');
+      } finally {
+        this.loading = false;
+      }
+    }
   }
 
   onFiltersChanged(filters: PatientFilter): void {
     console.log('Filters applied:', filters);
-    // In a real app, you would call a service with the filters
-    // For now, we'll just log them
+    this.filteredPatients = this.patientService.filterPatients({
+      category: filters.category,
+      gender: filters.gender,
+      status: filters.status,
+      searchTerm: filters.searchTerm
+    });
   }
 
   navigateToAddPatient(): void {
     this.router.navigate(['/add-patient']);
   }
 
-  refreshPatients(): void {
-    this.loadPatients();
+  async refreshPatients(): Promise<void> {
+    try {
+      this.loading = true;
+      await this.patientService.loadPatients();
+    } catch (error) {
+      console.error('Error refreshing patients:', error);
+      this.error = 'Failed to refresh patients';
+    } finally {
+      this.loading = false;
+    }
   }
 }

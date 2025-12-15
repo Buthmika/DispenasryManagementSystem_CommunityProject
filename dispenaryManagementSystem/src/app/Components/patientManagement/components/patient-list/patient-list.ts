@@ -53,28 +53,12 @@ export class PatientListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-// Load sample data if no patients provided and sample data is enabled
-    if (this.loadSampleData && this.patients.length === 0) {
-      this.loadSampleData();
-    }
     this.applyFilters();
   }
 
   ngOnDestroy(): void {
     // Cleanup if needed
   }
-
-  private loadSampleData(): void {
-    this.loading = true;
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      this.patients = this.sampleDataService.getSamplePatients();
-      this.loading = false;
-      this.applyFilters();
-    }, 1000);
-  }
-
 
   get filteredPatients(): PatientList[] {
     let filtered = this.patients;
@@ -90,17 +74,17 @@ export class PatientListComponent implements OnInit {
     }
 
     // Apply category filter
-    if (this.selectedCategory) {
+    if (this.selectedCategory && this.selectedCategory !== 'All Categories') {
       filtered = filtered.filter(patient => patient.category === this.selectedCategory);
     }
 
     // Apply gender filter
-    if (this.selectedGender) {
+    if (this.selectedGender && this.selectedGender !== 'All Genders') {
       filtered = filtered.filter(patient => patient.gender === this.selectedGender);
     }
 
     // Apply status filter
-    if (this.selectedStatus) {
+    if (this.selectedStatus && this.selectedStatus !== 'All Status') {
       filtered = filtered.filter(patient => patient.status === this.selectedStatus);
     }
 
