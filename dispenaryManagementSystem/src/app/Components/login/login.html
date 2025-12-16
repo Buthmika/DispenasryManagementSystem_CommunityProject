@@ -21,7 +21,18 @@
         <input type="password" placeholder="Enter your password" [(ngModel)]="password" name="password" required>
       </div>
 
+<<<<<<< Updated upstream
       <button type="submit" class="btn-submit" [disabled]="isLoading">{{ isLoading ? 'Logging in...' : 'Log in' }}</button>
+=======
+      <button class="btn-submit">Log in</button>
+      
+      <!-- Quick navigation links for testing -->
+      <div style="margin-top: 20px; text-align: center; display: flex; gap: 15px; justify-content: center;">
+        <a routerLink="/admin-dashboard" style="color: #4f46e5; text-decoration: none; font-weight: 500;">Admin Dashboard</a>
+        <span style="color: #94a3b8;">|</span>
+        <a routerLink="/doctor-dashboard" style="color: #4f46e5; text-decoration: none; font-weight: 500;">Doctor Dashboard</a>
+      </div>
+>>>>>>> Stashed changes
     </form>
 
     <!-- <div class="divider">
