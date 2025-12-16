@@ -1,0 +1,177 @@
+<div class="admin-dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <img src="assets/images/Vector (1).png" alt="ClinicPlus Logo" class="logo-image">
+        <span class="logo-text">ClinicPlus</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a routerLink="/admin-dashboard" routerLinkActive="active">
+              <span class="material-symbols-outlined">dashboard</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/settings" routerLinkActive="active">
+              <span class="material-symbols-outlined">settings</span>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="help-box">
+        <p>Need Help?</p>
+        <span>Contact our support team.</span>
+        <button class="btn-support" (click)="contactSupport()">Contact Support</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-greeting">
+        <h1>Welcome Admin</h1>
+        <p>Here's your dashboard overview.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <div class="user-profile">
+          <img src="https://placehold.co/40x40/E2E8F0/334155?text=DI" alt="Dr. Indika Uvanpriya">
+          <div class="user-details">
+            <strong>Dr. Indika Uvanpriya</strong>
+            <span>Specialist</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <section class="stats-section">
+      <h2>Medical & Medicine Reports</h2>
+      <div class="stats-cards">
+        <div class="stat-card blue">
+          <div class="stat-icon">
+            <span class="material-symbols-outlined">description</span>
+          </div>
+          <div class="stat-info">
+            <p>Patient Visits</p>
+            <h3>{{ patientVisits }}</h3>
+          </div>
+        </div>
+
+        <div class="stat-card white">
+          <div class="stat-icon">
+            <span class="material-symbols-outlined">medication</span>
+          </div>
+          <div class="stat-info">
+            <p>Prescriptions</p>
+            <h3>{{ prescriptions }}</h3>
+          </div>
+        </div>
+
+        <div class="stat-card blue">
+          <div class="stat-icon">
+            <span class="material-symbols-outlined">inventory_2</span>
+          </div>
+          <div class="stat-info">
+            <p>Inventory Status</p>
+            <h3 class="warning">{{ inventoryStatus }}</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Patient Records -->
+    <section class="patient-records-section">
+      <div class="section-header">
+        <h2>Patient Records</h2>
+        <div class="search-box">
+          <span class="material-symbols-outlined">search</span>
+          <input 
+            type="text" 
+            placeholder="Search patients..." 
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="searchPatients()">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="patient-table">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Date of Birth</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Last Visit</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let patient of patientRecords">
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.dateOfBirth }}</td>
+              <td>{{ patient.age }}</td>
+              <td>{{ patient.gender }}</td>
+              <td>{{ patient.lastVisit }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="patient.status">
+                  {{ patient.status }}
+                </span>
+              </td>
+              <td>
+                <button class="btn-view" (click)="viewPatient(patient)">View</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Right Sidebar -->
+  <aside class="right-sidebar">
+    <!-- Notification Center -->
+    <div class="notification-center">
+      <h3>Notification Center</h3>
+      <div class="notifications">
+        <div class="notification-item" *ngFor="let notification of notifications" [ngClass]="notification.type">
+          <div class="notification-icon">
+            <span class="material-symbols-outlined">{{ notification.icon }}</span>
+          </div>
+          <div class="notification-content">
+            <p>{{ notification.message }}</p>
+            <span class="notification-time">{{ notification.time }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Roles & Permissions -->
+    <div class="user-roles-section">
+      <h3>User Roles & Permissions</h3>
+      <div class="roles-list">
+        <div class="role-item" *ngFor="let role of userRoles">
+          <div class="role-info">
+            <h4>{{ role.title }}</h4>
+            <p>{{ role.description }}</p>
+          </div>
+          <button class="btn-edit" (click)="editRole(role)">Edit</button>
+        </div>
+      </div>
+      <button class="btn-add-role" (click)="addNewRole()">Add New Role</button>
+    </div>
+  </aside>
+</div>
