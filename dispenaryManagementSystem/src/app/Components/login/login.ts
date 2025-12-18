@@ -1,12 +1,20 @@
 import { Component } from '@angular/core';
+<<<<<<< Updated upstream
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+=======
+import { RouterLink } from '@angular/router';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-login',
   standalone: true,
+<<<<<<< Updated upstream
   imports: [CommonModule, FormsModule],
+=======
+  imports: [RouterLink],
+>>>>>>> Stashed changes
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
