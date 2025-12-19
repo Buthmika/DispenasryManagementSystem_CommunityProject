@@ -102,9 +102,13 @@
             type="text" 
             placeholder="Search patients..." 
             [(ngModel)]="searchQuery"
-            (keyup.enter)="searchPatients()">
+            (input)="searchPatients()">
         </div>
       </div>
+
+      <p style="margin-bottom: 16px; color: #64748b; font-size: 14px;">
+        Showing {{ patientRecords.length }} of {{ allPatients.length }} patients
+      </p>
 
       <div class="table-container">
         <table class="patient-table">
@@ -120,6 +124,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr *ngIf="patientRecords.length === 0">
+              <td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">
+                <p style="margin: 0;">{{ searchQuery ? 'No patients found matching "' + searchQuery + '"' : 'No patient records available' }}</p>
+              </td>
+            </tr>
             <tr *ngFor="let patient of patientRecords">
               <td>{{ patient.name }}</td>
               <td>{{ patient.dateOfBirth }}</td>
