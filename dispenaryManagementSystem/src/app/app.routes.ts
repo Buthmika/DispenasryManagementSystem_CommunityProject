@@ -10,6 +10,7 @@ import { DoctorDashboardComponent } from './Components/doctorDashboard/doctorDas
 import { AuthGuard } from './guards/auth.guard';
 import { Inventory } from './Components/inventory/inventory';
 import { AdminDashboardComponent } from './Components/adminDashboard/adiminDashboard';
+import { ReportsPageComponent } from './Components/report_page/reports-page';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,5 +23,6 @@ export const routes: Routes = [
 	{path:'sidebar',component: SideBar, canActivate: [AuthGuard]},
 	{path:'patient-management', component: PatientManagementPageComponent, canActivate: [AuthGuard]},
 	{path:'add-patient', component: AddPatientComponent, canActivate: [AuthGuard]},
-	{path:'inventory', component: Inventory, canActivate: [AuthGuard]}
+	{path:'inventory', component: Inventory, canActivate: [AuthGuard]},
+	{ path: 'reports', component: ReportsPageComponent, canActivate: [AuthGuard] }
 ];
