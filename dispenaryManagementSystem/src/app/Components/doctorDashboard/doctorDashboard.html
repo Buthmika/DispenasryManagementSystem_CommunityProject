@@ -1,59 +1,4 @@
-<div class="dashboard-container">
-  
-  <aside class="sidebar">
-    <div class="sidebar-top">
-     <div class="logo">
- <img src="assets/images/Vector (1).png" alt="ClinicPlus Logo" class="logo-image">
-  
-  <span class="logo-text">ClinicPlus</span>
-</div>
-
-      <nav class="sidebar-nav">
-        <ul>
-          <li>
-            <a routerLink="/doctor-dashboard" routerLinkActive="active">
-              <span class="material-symbols-outlined">dashboard</span>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/patient-management" routerLinkActive="active">
-              <span class="material-symbols-outlined">group</span>
-              <span>Patient Management</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/inventory" routerLinkActive="active">
-              <span class="material-symbols-outlined">local_pharmacy</span>
-              <span>Pharmacy & Inventory</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/reports" routerLinkActive="active">
-              <span class="material-symbols-outlined">analytics</span>
-              <span>Reports & Analytics</span>
-            </a>
-          </li>
-          <li>
-            <a routerLink="/settings" routerLinkActive="active">
-              <span class="material-symbols-outlined">settings</span>
-              <span>Settings</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-
-    <div class="sidebar-bottom">
-      <div class="help-box">
-        <p>Need Help?</p>
-        <span>Contact our support team.</span>
-        <button class="btn btn-support">Contact Support</button>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main-content">
+<main class="main-content">
     
     <header class="header">
       <div class="header-greeting">
@@ -82,12 +27,12 @@
         <strong>Low Stock Alert</strong>
         <p>Multiple items in your inventory are running low.</p>
       </div>
-      <button class="btn btn-primary-clinic">View Inventory</button>
+      <button class="btn btn-primary-clinic" routerLink="/inventory">View Inventory</button>
     </section>
 
     <section class="main-cards">
       
-      <div class="card blue-gradient-card">
+      <div class="card blue-gradient-card" routerLink="/reports" style="cursor: pointer;">
         <div class="card-icon-container-gradient">
           <span class="material-symbols-outlined">analytics</span>
         </div>
@@ -103,15 +48,14 @@
         <p>Access patient records, appointments, and communication.</p>
       </div>
 
-     <div class="card blue-gradient-card">
-  <div class="card-icon-container-gradient">
-    <span class="material-symbols-outlined">local_pharmacy</span>
-  </div>
-  <h4>Pharmacy & Inventory</h4>
-  <p>Manage stock levels, prescriptions, and supplier orders.</p>
-</div>
+      <div class="card blue-gradient-card" routerLink="/inventory" style="cursor: pointer;">
+        <div class="card-icon-container-gradient">
+          <span class="material-symbols-outlined">local_pharmacy</span>
+        </div>
+        <h4>Pharmacy & Inventory</h4>
+        <p>Manage stock levels, prescriptions, and supplier orders.</p>
+      </div>
 
     </section>
 
   </main>
-</div>
