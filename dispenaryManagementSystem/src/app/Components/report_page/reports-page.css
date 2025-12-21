@@ -1,9 +1,19 @@
-/* Main Page Layout */
+/* --- NEW WRAPPER FOR SIDEBAR LAYOUT --- */
+.page-wrapper {
+  display: flex; /* Puts Sidebar and Content side-by-side */
+  width: 100%;
+  min-height: 100vh;
+  background-color: #F3F4F6;
+}
+
+/* Main Page Layout (Updated to be flexible) */
 .reports-container {
+  flex: 1; /* Takes up remaining space next to sidebar */
   padding: 30px;
   background-color: #F3F4F6;
   min-height: 100vh;
   font-family: 'Poppins', sans-serif;
+  overflow-y: auto; /* Allows scrolling */
 }
 
 /* Header Section */
@@ -28,7 +38,7 @@
   font-size: 14px;
 }
 
-/* --- THE GREEN BUTTON STYLE (Matches Inventory Page) --- */
+/* --- THE GREEN BUTTON STYLE --- */
 .btn-generate {
   background-color: #22c55e;
   color: white;
@@ -54,15 +64,15 @@
   margin-bottom: 30px;
 }
 
-/* --- BLUE CARD STYLE (Matches Patient Management Page) --- */
+/* --- BLUE CARD STYLE --- */
 .stat-card {
-  background: linear-gradient(to bottom, #2742A1,#4B97FF); /* Blue Gradient */
+  background: linear-gradient(to bottom, #2742A1, #4B97FF); /* Blue Gradient Top to Bottom */
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
   display: flex;
   align-items: center;
-  color: white; /* White text for everything */
+  color: white; 
   transition: transform 0.2s;
   min-height: 120px;
 }
@@ -76,7 +86,7 @@
 .icon-box {
   width: 60px;
   height: 60px;
-  background-color: rgba(255, 255, 255, 0.2); /* See-through white */
+  background-color: rgba(255, 255, 255, 0.2); 
   border-radius: 50%;
   display: flex;
   align-items: center;
