@@ -60,3 +60,12 @@ Document ID: [User UID from Authentication]
 - Regular users cannot register themselves
 - Each user must have a corresponding Firestore document with their role
 - Change default passwords after first login
+
+## Firestore Rules
+The app reads `users/{uid}` after Firebase Auth login, so Firestore must allow a signed-in user to read their own document.
+
+Use the rules in [`firestore.rules`](firestore.rules) and deploy them with Firebase CLI, or paste them into the Firestore Rules tab in Firebase Console.
+
+Important:
+- `users/{uid}` must use the same UID as the Firebase Authentication user.
+- The `role` field must be lowercase: `admin`, `doctor`, or `pharmacist`.

@@ -71,6 +71,14 @@ export class AuthService {
         errorMessage = 'Incorrect password.';
       } else if (error.code === 'auth/invalid-email') {
         errorMessage = 'Invalid email format.';
+      } else if (error.code === 'auth/invalid-credential') {
+        errorMessage = 'Wrong email or password.';
+      } else if (error.code === 'permission-denied') {
+        errorMessage = 'Firestore access denied. Check Firestore rules for the users collection.';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Check your internet connection.';
+      } else if (error.message) {
+        errorMessage = error.message;
       }
 
       return { success: false, error: errorMessage };

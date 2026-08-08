@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, setDoc } from '@angular/fire/firestore';
-import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, getAuth } from '@angular/fire/auth';
+import { initializeApp } from 'firebase/app';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface SystemUser {
   id?: string;
@@ -19,6 +21,8 @@ export interface SystemUser {
 export class UserManagementService {
   private usersSubject = new BehaviorSubject<SystemUser[]>([]);
   public users$ = this.usersSubject.asObservable();
+  private provisionApp = initializeApp(environment.firebaseConfig, 'admin-user-provisioning');
+  private provisionAuth = getAuth(this.provisionApp);
 
   constructor(
     private firestore: Firestore,
@@ -54,8 +58,8 @@ export class UserManagementService {
 
   async createUser(user: SystemUser, password: string): Promise<{ success: boolean; error?: string; userId?: string }> {
     try {
-      // Create user in Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(this.auth, user.email, password);
+      // Create user in a separate Firebase Auth instance so the admin session stays signed in
+      const userCredential = await createUserWithEmailAndPassword(this.provisionAuth, user.email, password);
       const firebaseUserId = userCredential.user.uid;
 
       // Map role to lowercase for auth service
@@ -86,6 +90,9 @@ export class UserManagementService {
       });
 
       await this.loadUsers();
+
+      // End the temporary provisioning session so the main admin session stays untouched.
+      await this.provisionAuth.signOut();
       return { success: true, userId: firebaseUserId };
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -97,6 +104,8 @@ export class UserManagementService {
         errorMessage = 'Password should be at least 6 characters';
       } else if (error.code === 'auth/invalid-email') {
         errorMessage = 'Invalid email format';
+      } else if (error.code === 'permission-denied') {
+        errorMessage = 'Firestore access denied. Check Firestore rules for users and systemUsers.';
       }
       
       return { success: false, error: errorMessage };

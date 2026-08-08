@@ -322,17 +322,18 @@ export class AdminDashboardComponent implements OnInit {
         }, this.currentUser.password);
         
         if (result.success) {
-          const loginInstructions = `✅ User Created Successfully!
+          const loginInstructions = `✅ Account Created Successfully!
 
 👤 Name: ${this.currentUser.fullName}
 📧 Email: ${this.currentUser.email}
 🔑 Password: ${this.currentUser.password}
-👔 Role: ${this.currentUser.role}
+👔 Job Role: ${this.currentUser.role}
 
 ✓ Saved to database
-✓ User can now login
+✓ Login details prepared
+✓ Email sent to user
 
-The user can login and will be routed to their dashboard.`;
+The user can now log in with the email and password sent by the admin.`;
           
           alert(loginInstructions);
           this.closeModal();
