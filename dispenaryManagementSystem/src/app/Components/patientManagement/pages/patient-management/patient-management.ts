@@ -33,6 +33,7 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
   medicineSearchTerm: string = '';
   availableMedicines: Medicine[] = [];
   filteredMedicines: Medicine[] = [];
+  issueQuantities: Record<string, number> = {};
   selectedPrescriptionItems: Array<{ medicineId: string; medicineName: string; status: Medicine['status']; quantity: number }> = [];
   savingPrescription: boolean = false;
 
@@ -179,6 +180,7 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
     this.medicineSearchTerm = '';
     this.filteredMedicines = this.availableMedicines;
     this.selectedPrescriptionItems = [];
+    this.issueQuantities = {};
   }
 
   closePrescriptionModal(): void {
@@ -231,6 +233,12 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const available = medicine.quantity || 0;
+    if (quantity > available) {
+      alert(`Cannot issue more than available stock (${available}).`);
+      return;
+    }
+
     const existingItem = this.selectedPrescriptionItems.find((item) => item.medicineId === medicine.id);
     if (existingItem) {
       existingItem.quantity = quantity;
@@ -272,6 +280,11 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
       const currentUser = this.authService.getCurrentUser();
       const doctorName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Doctor';
       const doctorEmail = currentUser?.email || '';
+
+      // Reserve stock for each selected drug before saving prescription
+      for (const item of this.selectedPrescriptionItems) {
+        await this.medicineService.adjustMedicineStock(item.medicineId, -item.quantity);
+      }
 
       await this.patientService.addPrescription(this.selectedPatientId, {
         doctorId: currentUser?.uid || '',

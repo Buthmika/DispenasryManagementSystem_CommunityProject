@@ -134,6 +134,33 @@ export class MedicineService {
     }
   }
 
+  async adjustMedicineStock(id: string, delta: number): Promise<void> {
+    try {
+      const medicine = this.medicinesSubject.value.find((m) => m.id === id);
+      if (!medicine) {
+        throw new Error('Medicine not found');
+      }
+
+      const currentQuantity = Number(medicine.quantity || 0);
+      const newQuantity = currentQuantity + delta;
+
+      if (newQuantity < 0) {
+        throw new Error(`Not enough stock for ${medicine.medicineName}`);
+      }
+
+      await updateDoc(doc(this.firestore, 'medicines', id), {
+        quantity: newQuantity,
+        status: this.getStatusFromQuantity(newQuantity),
+        updatedAt: Timestamp.now()
+      });
+
+      await this.loadMedicines();
+    } catch (error: any) {
+      console.error('Error adjusting medicine stock:', error);
+      throw new Error(error?.message || error?.code || 'Unable to adjust medicine stock.');
+    }
+  }
+
   async deleteMedicine(id: string): Promise<void> {
     try {
       const medicineDoc = doc(this.firestore, 'medicines', id);

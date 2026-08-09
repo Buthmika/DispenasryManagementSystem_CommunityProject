@@ -153,10 +153,13 @@
             <input
               type="number"
               min="1"
+              [max]="medicine.quantity"
               class="qty-input"
-              [(ngModel)]="medicine.quantity"
+              [(ngModel)]="issueQuantities[medicine.id || '']"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Issue qty"
             />
-            <button type="button" class="btn btn-secondary" (click)="addMedicineToPrescription(medicine, medicine.quantity)">Add</button>
+            <button type="button" class="btn btn-secondary" (click)="addMedicineToPrescription(medicine, issueQuantities[medicine.id || ''] || 1)">Add</button>
           </div>
         </div>
 
