@@ -24,11 +24,19 @@
           </button>
           <button 
             class="btn btn-primary"
-            (click)="navigateToAddPatient()">
+              (click)="navigateToAddPatient()">
+              <div>
+                <i class="material-icons">add_circle</i> 
+              </div>
+              Add New Patient
+            </button>
+            <button 
+              class="btn btn-primary"
+            (click)="openPrescriptionModal()">
             <div>
                  <i class="material-icons">add_circle</i> 
             </div>
-            Add New Patient
+            Create Prescription
           </button>
         </div>
       </div>
@@ -79,5 +87,76 @@
         (filtersChanged)="onFiltersChanged($event)">
       </app-patient-list>
     </main>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showPrescriptionModal" (click)="closePrescriptionModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Create Prescription</h2>
+      <button type="button" class="close-modal" (click)="closePrescriptionModal()">x</button>
+    </div>
+
+    <div class="modal-content">
+      <div class="input-grid">
+        <div class="form-group">
+          <label>Patient Name (required)</label>
+          <input type="text" [(ngModel)]="prescriptionPatientName" placeholder="Enter exact patient name" />
+        </div>
+        <div class="form-group">
+          <label>Mobile Number (required)</label>
+          <input type="text" [(ngModel)]="prescriptionPatientMobile" placeholder="Enter exact mobile number" />
+        </div>
+      </div>
+
+      <div class="medicine-search-bar">
+        <input
+          type="text"
+          [(ngModel)]="medicineSearchTerm"
+          placeholder="Search drugs by name, id, or batch"
+        />
+        <button type="button" class="btn btn-secondary" (click)="searchMedicinesForPrescription()">Show Drug Status</button>
+      </div>
+
+      <div class="medicine-results">
+        <div class="medicine-row header">
+          <span>Drug</span>
+          <span>Status</span>
+          <span>Qty</span>
+          <span>Action</span>
+        </div>
+        <div class="medicine-row" *ngFor="let medicine of filteredMedicines">
+          <span>{{ medicine.medicineName }}</span>
+          <span class="status-chip" [ngClass]="medicine.status === 'In Stock' ? 'in' : (medicine.status === 'Low Stock' ? 'low' : 'out')">
+            {{ medicine.status }}
+          </span>
+          <input
+            type="number"
+            min="1"
+            [ngModel]="medicineQuantityMap[medicine.id || ''] || 0"
+            (ngModelChange)="medicineQuantityMap[medicine.id || ''] = $event"
+          />
+          <button type="button" class="btn btn-primary" (click)="addMedicineToPrescription(medicine)">Add</button>
+        </div>
+      </div>
+
+      <div class="selected-list">
+        <h3>Selected Drugs</h3>
+        <div *ngIf="selectedPrescriptionItems.length === 0" class="empty-state">No drugs added yet.</div>
+        <div class="selected-row" *ngFor="let item of selectedPrescriptionItems">
+          <span>{{ item.medicineName }}</span>
+          <span>Qty: {{ item.quantity }}</span>
+          <span>{{ item.status }}</span>
+          <button type="button" class="btn-remove" (click)="removePrescriptionItem(item.medicineId)">Remove</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closePrescriptionModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="savingPrescription" (click)="completePrescription()">
+          {{ savingPrescription ? 'Saving...' : 'Finish Prescription' }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>

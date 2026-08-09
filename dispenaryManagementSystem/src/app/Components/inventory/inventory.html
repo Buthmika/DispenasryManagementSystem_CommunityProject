@@ -31,7 +31,7 @@
         <select [(ngModel)]="selectedStatus" (change)="updateFilteredMedicines()" class="status-dropdown">
           <option value="All">All ({{ medicines.length }})</option>
           <option value="In Stock">In Stock ({{ inStockCount }})</option>
-          <option value="Low of Stock">Low of Stock ({{ lowStockCount }})</option>
+          <option value="Low Stock">Low Stock ({{ lowStockCount }})</option>
           <option value="Out of Stock">Out of Stock ({{ outOfStockCount }})</option>
         </select>
         <div style="margin-left:auto; display:flex; gap:12px; align-items:center;">
@@ -88,7 +88,7 @@
           <label>Status</label>
           <select formControlName="status">
             <option value="In Stock">In Stock</option>
-            <option value="Low of Stock">Low of Stock</option>
+            <option value="Low Stock">Low Stock</option>
             <option value="Out of Stock">Out of Stock</option>
           </select>
         </div>

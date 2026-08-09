@@ -23,10 +23,12 @@ interface Notification {
 }
 
 interface UserRole {
+  id?: string;
   title: string;
   description: string;
   username?: string;
   email?: string;
+  count?: number;
 }
 
 interface User {
@@ -85,25 +87,23 @@ export class AdminDashboardComponent implements OnInit {
     {
       title: 'Administrator',
       description: 'Full access to all features',
-      username: 'admin',
-      email: 'admin@clinic.com'
+      count: 0
     },
     {
       title: 'Doctor',
       description: 'Access to patient records',
-      username: 'doctor1',
-      email: 'doctor@clinic.com'
+      count: 0
     },
     {
       title: 'Manager',
       description: 'Manage staff and operations',
-      username: 'manager',
-      email: 'manager@clinic.com'
+      count: 0
     }
   ];
 
   // Modal state
   showUserModal: boolean = false;
+  showPermissionsModal: boolean = false;
   isEditMode: boolean = false;
   currentUser: User = this.getEmptyUser();
   selectedRoleIndex: number = -1;
@@ -128,39 +128,24 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   updateUserRolesDisplay(): void {
-    // Group users by role
-    const roleGroups: { [key: string]: SystemUser[] } = {
-      'Administrator': [],
-      'Doctor': [],
-      'Manager': []
+    const roleCounts: { [key: string]: number } = {
+      'Administrator': 0,
+      'Doctor': 0,
+      'Manager': 0
     };
 
     this.systemUsers.forEach(user => {
-      if (roleGroups[user.role]) {
-        roleGroups[user.role].push(user);
+      if (roleCounts[user.role] !== undefined) {
+        roleCounts[user.role] += 1;
       }
     });
 
-    // Update userRoles array with actual user data
-    this.userRoles = [];
-    Object.keys(roleGroups).forEach(role => {
-      if (roleGroups[role].length > 0) {
-        roleGroups[role].forEach(user => {
-          this.userRoles.push({
-            title: user.role,
-            description: this.getRoleDescription(user.role),
-            username: user.username,
-            email: user.email
-          });
-        });
-      } else {
-        // Show placeholder if no users in role
-        this.userRoles.push({
-          title: role,
-          description: this.getRoleDescription(role)
-        });
-      }
-    });
+    // Keep this section compact with one card per role.
+    this.userRoles = Object.keys(roleCounts).map((role) => ({
+      title: role,
+      description: this.getRoleDescription(role),
+      count: roleCounts[role]
+    }));
   }
 
   loadPatientsData(): void {
@@ -243,6 +228,7 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditMode = true;
     this.selectedRoleIndex = this.userRoles.indexOf(role);
     this.currentUser = {
+      id: role.id,
       username: role.username || '',
       email: role.email || '',
       password: '',
@@ -256,6 +242,42 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditMode = false;
     this.currentUser = this.getEmptyUser();
     this.showUserModal = true;
+  }
+
+  openPermissionsModal(): void {
+    this.showPermissionsModal = true;
+  }
+
+  closePermissionsModal(): void {
+    this.showPermissionsModal = false;
+  }
+
+  async removePermissionUser(user: SystemUser): Promise<void> {
+    if (!user.id) {
+      alert('❌ Error: User id not found');
+      return;
+    }
+
+    const confirmed = confirm(`Remove ${user.fullName} (${user.role}) from user permissions list?`);
+    if (!confirmed) {
+      return;
+    }
+
+    const result = await this.userManagementService.deleteUser(user.id);
+    if (result.success) {
+      alert('✅ User removed from permissions list.');
+    } else {
+      alert(`❌ Error removing user:\n\n${result.error}`);
+    }
+  }
+
+  getPermissionText(role: SystemUser['role']): string {
+    const map: Record<SystemUser['role'], string> = {
+      Administrator: 'Full system control',
+      Doctor: 'Patient and medical access',
+      Manager: 'Operations and reports'
+    };
+    return map[role];
   }
 
   getEmptyUser(): User {
@@ -348,7 +370,7 @@ The user can now log in with the email and password sent by the admin.`;
       // Restore button state
       if (saveButton) {
         saveButton.disabled = false;
-        saveButton.textContent = this.isEditMode ? 'Update User' : 'Create User';
+        saveButton.textContent = this.isEditMode ? 'Update User' : 'Create Account';
       }
     }
   }

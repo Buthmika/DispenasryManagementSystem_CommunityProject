@@ -26,6 +26,7 @@ export class Inventory implements OnInit, OnDestroy {
   isModalOpen: boolean = false;
   isEditMode: boolean = false;
   editingMedicineId: string | null = null;
+  editingMedicineCode: string = '';
   loading: boolean = false;
   
   private medicinesSubscription?: Subscription;
@@ -38,6 +39,7 @@ export class Inventory implements OnInit, OnDestroy {
       medicineName: ['', [Validators.required, Validators.minLength(2)]],
       quantity: [0, [Validators.required, Validators.min(0)]],
       expiryDate: ['', Validators.required],
+      status: ['In Stock', Validators.required],
       category: [''],
       manufacturer: [''],
       batchNumber: [''],
@@ -123,10 +125,12 @@ export class Inventory implements OnInit, OnDestroy {
   openAddModal(): void {
     this.isEditMode = false;
     this.editingMedicineId = null;
+    this.editingMedicineCode = '';
     this.medicineForm.reset({
       medicineName: '',
       quantity: 0,
       expiryDate: '',
+      status: 'In Stock',
       category: '',
       manufacturer: '',
       batchNumber: '',
@@ -139,6 +143,7 @@ export class Inventory implements OnInit, OnDestroy {
   editMedicine(medicine: Medicine): void {
     this.isEditMode = true;
     this.editingMedicineId = medicine.id || null;
+    this.editingMedicineCode = medicine.medicineId;
     
     // Convert date format from DD-MM-YYYY to YYYY-MM-DD for input type="date"
     let formattedDate = medicine.expiryDate;
@@ -153,6 +158,7 @@ export class Inventory implements OnInit, OnDestroy {
       medicineName: medicine.medicineName,
       quantity: medicine.quantity,
       expiryDate: formattedDate,
+      status: medicine.status,
       category: medicine.category || '',
       manufacturer: medicine.manufacturer || '',
       batchNumber: medicine.batchNumber || '',
@@ -164,6 +170,8 @@ export class Inventory implements OnInit, OnDestroy {
   // Close modal
   closeModal(): void {
     this.isModalOpen = false;
+    this.editingMedicineId = null;
+    this.editingMedicineCode = '';
     this.medicineForm.reset();
   }
 
@@ -175,6 +183,7 @@ export class Inventory implements OnInit, OnDestroy {
 
     this.loading = true;
     const formValue = this.medicineForm.value;
+    const quantityValue = Number(formValue.quantity || 0);
     
     // Convert date from YYYY-MM-DD to DD-MM-YYYY
     const date = new Date(formValue.expiryDate);
@@ -184,11 +193,11 @@ export class Inventory implements OnInit, OnDestroy {
     const formattedDate = `${day}-${month}-${year}`;
 
     const medicineData: Omit<Medicine, 'id'> = {
-      medicineId: '', // Will be auto-generated
+      medicineId: this.isEditMode ? this.editingMedicineCode : '', // Keep existing code on update
       medicineName: formValue.medicineName,
-      quantity: formValue.quantity,
+      quantity: quantityValue,
       expiryDate: formattedDate,
-      status: 'In Stock', // Will be auto-calculated
+      status: formValue.status,
       category: formValue.category,
       manufacturer: formValue.manufacturer,
       batchNumber: formValue.batchNumber,

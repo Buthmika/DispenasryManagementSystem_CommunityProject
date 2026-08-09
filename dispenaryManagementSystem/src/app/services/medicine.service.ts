@@ -22,6 +22,18 @@ export class MedicineService {
   private medicinesSubject = new BehaviorSubject<Medicine[]>([]);
   public medicines$ = this.medicinesSubject.asObservable();
 
+  private getStatusFromQuantity(quantity: number): Medicine['status'] {
+    if (quantity <= 0) {
+      return 'Out of Stock';
+    }
+
+    if (quantity < 50) {
+      return 'Low Stock';
+    }
+
+    return 'In Stock';
+  }
+
   constructor(private firestore: Firestore) {
     this.loadMedicines();
   }
@@ -35,13 +47,19 @@ export class MedicineService {
       const medicines: Medicine[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+        const quantity = Number(data['quantity'] || 0);
+        const storedStatus = data['status'] as Medicine['status'] | undefined;
+        const status: Medicine['status'] =
+          storedStatus === 'In Stock' || storedStatus === 'Low Stock' || storedStatus === 'Out of Stock'
+            ? storedStatus
+            : this.getStatusFromQuantity(quantity);
         medicines.push({
           id: doc.id,
           medicineId: data['medicineId'] || doc.id,
           medicineName: data['medicineName'] || '',
-          quantity: data['quantity'] || 0,
+          quantity: quantity,
           expiryDate: data['expiryDate'] || '',
-          status: data['status'] || 'In Stock',
+          status: status,
           category: data['category'],
           manufacturer: data['manufacturer'],
           batchNumber: data['batchNumber'],
@@ -65,20 +83,13 @@ export class MedicineService {
       const nextId = currentMedicines.length + 1;
       const medicineId = `MED${String(nextId).padStart(3, '0')}`; // MED001, MED002, etc.
       
-      // Auto-calculate status based on quantity
-      let status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-      if (medicine.quantity === 0) {
-        status = 'Out of Stock';
-      } else if (medicine.quantity < 50) {
-        status = 'Low Stock';
-      } else {
-        status = 'In Stock';
-      }
+      const quantity = Number(medicine.quantity || 0);
+      const status = medicine.status || this.getStatusFromQuantity(quantity);
       
       const docRef = await addDoc(medicinesCollection, {
         medicineId: medicineId,
         medicineName: medicine.medicineName,
-        quantity: medicine.quantity,
+        quantity: quantity,
         expiryDate: medicine.expiryDate,
         status: status,
         category: medicine.category,
@@ -104,12 +115,10 @@ export class MedicineService {
       // Auto-calculate status if quantity is being updated
       let updateData: any = { ...medicine };
       if (medicine.quantity !== undefined) {
-        if (medicine.quantity === 0) {
-          updateData.status = 'Out of Stock';
-        } else if (medicine.quantity < 50) {
-          updateData.status = 'Low Stock';
-        } else {
-          updateData.status = 'In Stock';
+        const quantity = Number(medicine.quantity || 0);
+        updateData.quantity = quantity;
+        if (!medicine.status) {
+          updateData.status = this.getStatusFromQuantity(quantity);
         }
       }
       

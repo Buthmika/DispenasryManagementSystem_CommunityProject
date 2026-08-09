@@ -37,6 +37,8 @@
     gap: 16px;
   }
 }
+    justify-content: center;
+    align-items: center;
 
 .header-text {
   flex: 1;
@@ -219,6 +221,13 @@
   }
 
   .header-text {
+  
+    .input-grid,
+    .medicine-search-bar,
+    .medicine-row,
+    .selected-row {
+      grid-template-columns: 1fr;
+    }
     .page-title {
       font-size: 24px;
     }

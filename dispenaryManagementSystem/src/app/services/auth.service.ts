@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface UserRole {
   email: string;
-  role: 'doctor' | 'admin' | 'pharmacist';
+  role: 'doctor' | 'admin' | 'pharmacist' | 'manager';
   displayName: string;
 }
 
@@ -49,8 +49,11 @@ export class AuthService {
           case 'admin':
             this.router.navigate(['/admin-dashboard']);
             break;
+          case 'manager':
+            this.router.navigate(['/reports']);
+            break;
           case 'pharmacist':
-            this.router.navigate(['/pharmacy-inventory']);
+            this.router.navigate(['/reports']);
             break;
           default:
             this.router.navigate(['/login']);

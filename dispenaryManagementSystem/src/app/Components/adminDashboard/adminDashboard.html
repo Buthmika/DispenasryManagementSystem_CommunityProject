@@ -177,13 +177,44 @@
             <h4>{{ role.title }}</h4>
             <p>{{ role.description }}</p>
           </div>
-          <button class="btn-edit" (click)="editRole(role)">Edit</button>
+          <span class="role-count">{{ role.count || 0 }}</span>
         </div>
       </div>
-      <button class="btn-add-role" (click)="addNewRole()">Add New Role</button>
+      <div class="roles-actions">
+        <button class="btn-add-role" (click)="addNewRole()">Add New Role</button>
+        <button class="btn-view-permissions" (click)="openPermissionsModal()">User Permissions</button>
+      </div>
     </div>
   </aside>
 </div>
+
+<!-- User Permissions Modal -->
+<div class="modal-overlay" *ngIf="showPermissionsModal" (click)="closePermissionsModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>User Permissions</h2>
+      <button class="btn-close" (click)="closePermissionsModal()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="permission-empty" *ngIf="systemUsers.length === 0">No users found.</div>
+
+      <div class="permissions-list" *ngIf="systemUsers.length > 0">
+        <div class="permission-item" *ngFor="let user of systemUsers">
+          <div class="permission-user-info">
+            <h4>{{ user.fullName }} ({{ user.role }})</h4>
+            <p>{{ user.email }}</p>
+            <small>{{ getPermissionText(user.role) }}</small>
+          </div>
+          <button class="btn-remove-user" (click)="removePermissionUser(user)">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- User Management Modal -->
 <div class="modal-overlay" *ngIf="showUserModal" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">

@@ -551,6 +551,19 @@
   backdrop-filter: blur(10px);
 }
 
+.role-count {
+  min-width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
 .role-info h4 {
   margin: 0 0 4px 0;
   font-size: 15px;
@@ -594,6 +607,81 @@
 .btn-add-role:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.roles-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-view-permissions {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view-permissions:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.permissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.permission-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.permission-user-info h4 {
+  margin: 0 0 4px 0;
+  color: #1e293b;
+  font-size: 15px;
+}
+
+.permission-user-info p {
+  margin: 0 0 4px 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.permission-user-info small {
+  color: #475569;
+  font-size: 12px;
+}
+
+.btn-remove-user {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-remove-user:hover {
+  background: #fee2e2;
+}
+
+.permission-empty {
+  color: #64748b;
+  text-align: center;
+  padding: 24px 8px;
 }
 
 /* User Management Modal */
