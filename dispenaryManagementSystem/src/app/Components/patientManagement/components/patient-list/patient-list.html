@@ -45,12 +45,6 @@
             }
           </select>
 
-          <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="filter-select">
-            <option value="">All Status</option>
-            @for (option of statusOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
 
           <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
         </div>
@@ -105,12 +99,6 @@
                   <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
                 }
               </th>
-              <th (click)="onSort('status')" class="sortable">
-                Status
-                @if (sortColumn === 'status') {
-                  <span class="sort-indicator">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
-                }
-              </th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -137,11 +125,6 @@
                 <td class="last-visit">
                   {{ patient.lastVisitDate ? (patient.lastVisitDate | date: 'MMM dd, yyyy') : 'Never' }}
                 </td>
-                <td>
-                  <span [class]="'status-badge ' + getStatusClass(patient.status)">
-                    {{ patient.status }}
-                  </span>
-                </td>
                 <td class="actions">
                   <button 
                     class="btn-action btn-edit"
@@ -161,11 +144,11 @@
             }
             @empty {
               <tr class="no-data">
-                <td colspan="9">
+                <td colspan="8">
                   <div class="empty-state">
                     <div class="empty-icon">📋</div>
                     <p>No patients found</p>
-                    @if (searchTerm || selectedCategory || selectedGender || selectedStatus) {
+                    @if (searchTerm || selectedCategory || selectedGender) {
                       <p class="empty-hint">Try adjusting your filters</p>
                     }
                   </div>

@@ -1,9 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PatientList, PatientFilter } from '../../models/patient.interface';
-import { PatientStatus, PatientCategory } from '../../constants/patients.constants';
-import { STATUS_OPTIONS, CATEGORY_OPTIONS, GENDER_OPTIONS } from '../../constants/patients.constants';
+import { PatientCategory } from '../../constants/patients.constants';
+import { CATEGORY_OPTIONS, GENDER_OPTIONS } from '../../constants/patients.constants';
 import { SampleDataService } from '../../services/sample-data.service';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -28,7 +28,6 @@ export class PatientListComponent implements OnInit {
   searchTerm: string = '';
   selectedCategory: string = '';
   selectedGender: string = '';
-  selectedStatus: string = '';
 
   // Pagination
   currentPage: number = 1;
@@ -42,7 +41,6 @@ export class PatientListComponent implements OnInit {
   // Filter options
   categoryOptions = CATEGORY_OPTIONS;
   genderOptions = GENDER_OPTIONS;
-  statusOptions = STATUS_OPTIONS;
 
   //add sample data for testing
   
@@ -83,10 +81,6 @@ export class PatientListComponent implements OnInit {
       filtered = filtered.filter(patient => patient.gender === this.selectedGender);
     }
 
-    // Apply status filter
-    if (this.selectedStatus && this.selectedStatus !== 'All Status') {
-      filtered = filtered.filter(patient => patient.status === this.selectedStatus);
-    }
 
     // Apply sorting
     filtered = this.sortPatients(filtered);
@@ -132,8 +126,7 @@ export class PatientListComponent implements OnInit {
     const filters: PatientFilter = {
       searchTerm: this.searchTerm || undefined,
       category: this.selectedCategory || undefined,
-      gender: this.selectedGender || undefined,
-      status: this.selectedStatus || undefined
+      gender: this.selectedGender || undefined
     };
 
     this.filtersChanged.emit(filters);
@@ -144,7 +137,6 @@ export class PatientListComponent implements OnInit {
     this.searchTerm = '';
     this.selectedCategory = '';
     this.selectedGender = '';
-    this.selectedStatus = '';
     this.applyFilters();
   }
 
@@ -176,15 +168,6 @@ export class PatientListComponent implements OnInit {
     event.stopPropagation();
     if (confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
       this.patientDelete.emit(patientId);
-    }
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case PatientStatus.ACTIVE: return 'status-active';
-      case PatientStatus.INACTIVE: return 'status-inactive';
-      case PatientStatus.TRANSFERRED: return 'status-transferred';
-      default: return 'status-unknown';
     }
   }
 

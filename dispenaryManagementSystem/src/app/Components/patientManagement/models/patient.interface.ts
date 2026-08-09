@@ -72,6 +72,23 @@ export interface PatientList {
   isPregnant?: boolean;
 }
 
+export interface PrescriptionItemEntry {
+  medicineId: string;
+  medicineName: string;
+  quantity: number;
+  status: string;
+}
+
+export interface PrescriptionEntry {
+  id?: string;
+  doctorId: string;
+  doctorName: string;
+  doctorEmail?: string;
+  date: string;
+  notes?: string;
+  medicines: PrescriptionItemEntry[];
+}
+
 // For search and filters
 export interface PatientFilter {
   searchTerm?: string;

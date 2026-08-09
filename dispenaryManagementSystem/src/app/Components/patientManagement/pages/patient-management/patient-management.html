@@ -30,11 +30,11 @@
               </div>
               Add New Patient
             </button>
-            <button 
-              class="btn btn-primary"
+          <button 
+            class="btn btn-primary"
             (click)="openPrescriptionModal()">
             <div>
-                 <i class="material-icons">add_circle</i> 
+              <i class="material-icons">medical_services</i>
             </div>
             Create Prescription
           </button>
@@ -94,69 +94,166 @@
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Create Prescription</h2>
-      <button type="button" class="close-modal" (click)="closePrescriptionModal()">x</button>
+      <button type="button" class="close-modal" (click)="closePrescriptionModal()">×</button>
     </div>
 
     <div class="modal-content">
-      <div class="input-grid">
-        <div class="form-group">
-          <label>Patient Name (required)</label>
-          <input type="text" [(ngModel)]="prescriptionPatientName" placeholder="Enter exact patient name" />
-        </div>
-        <div class="form-group">
-          <label>Mobile Number (required)</label>
-          <input type="text" [(ngModel)]="prescriptionPatientMobile" placeholder="Enter exact mobile number" />
-        </div>
-      </div>
-
-      <div class="medicine-search-bar">
-        <input
-          type="text"
-          [(ngModel)]="medicineSearchTerm"
-          placeholder="Search drugs by name, id, or batch"
-        />
-        <button type="button" class="btn btn-secondary" (click)="searchMedicinesForPrescription()">Show Drug Status</button>
-      </div>
-
-      <div class="medicine-results">
-        <div class="medicine-row header">
-          <span>Drug</span>
-          <span>Status</span>
-          <span>Qty</span>
-          <span>Action</span>
-        </div>
-        <div class="medicine-row" *ngFor="let medicine of filteredMedicines">
-          <span>{{ medicine.medicineName }}</span>
-          <span class="status-chip" [ngClass]="medicine.status === 'In Stock' ? 'in' : (medicine.status === 'Low Stock' ? 'low' : 'out')">
-            {{ medicine.status }}
-          </span>
+      <div class="prescription-grid">
+        <div class="form-group full-width">
+          <label>Search Patient</label>
           <input
-            type="number"
-            min="1"
-            [ngModel]="medicineQuantityMap[medicine.id || ''] || 0"
-            (ngModelChange)="medicineQuantityMap[medicine.id || ''] = $event"
+            type="text"
+            [(ngModel)]="prescriptionPatientSearch"
+            (ngModelChange)="filterPatientOptions()"
+            placeholder="Search by name, ID or phone"
           />
-          <button type="button" class="btn btn-primary" (click)="addMedicineToPrescription(medicine)">Add</button>
+          <div class="search-results" *ngIf="patientSearchResults.length > 0 && !selectedPatientId">
+            <button
+              type="button"
+              class="result-item"
+              *ngFor="let patient of patientSearchResults"
+              (click)="selectPrescriptionPatient(patient)">
+              <strong>{{ patient.patientId }}</strong> · {{ patient.fullName }} · {{ patient.phoneNumber }}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div class="selected-list">
-        <h3>Selected Drugs</h3>
-        <div *ngIf="selectedPrescriptionItems.length === 0" class="empty-state">No drugs added yet.</div>
-        <div class="selected-row" *ngFor="let item of selectedPrescriptionItems">
-          <span>{{ item.medicineName }}</span>
-          <span>Qty: {{ item.quantity }}</span>
-          <span>{{ item.status }}</span>
-          <button type="button" class="btn-remove" (click)="removePrescriptionItem(item.medicineId)">Remove</button>
+        <div class="form-group half-width">
+          <label>Selected Patient</label>
+          <input type="text" [value]="selectedPatientName" readonly placeholder="Select a patient" />
         </div>
-      </div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn btn-secondary" (click)="closePrescriptionModal()">Cancel</button>
-        <button type="button" class="btn btn-primary" [disabled]="savingPrescription" (click)="completePrescription()">
-          {{ savingPrescription ? 'Saving...' : 'Finish Prescription' }}
-        </button>
+        <div class="form-group half-width">
+          <label>Phone</label>
+          <input type="text" [value]="selectedPatientPhone" readonly placeholder="Patient phone" />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Search Drug</label>
+          <input
+            type="text"
+            [(ngModel)]="medicineSearchTerm"
+            (ngModelChange)="searchMedicinesForPrescription()"
+            placeholder="Search by drug name, ID or batch"
+          />
+        </div>
+
+        <div class="medicine-table full-width">
+          <div class="medicine-row header">
+            <span>Drug</span>
+            <span>Status</span>
+            <span>Qty</span>
+            <span>Action</span>
+          </div>
+          <div class="medicine-row" *ngFor="let medicine of filteredMedicines">
+            <span>{{ medicine.medicineName }}</span>
+            <span class="status-chip" [ngClass]="medicine.status === 'In Stock' ? 'in-stock' : (medicine.status === 'Low Stock' ? 'low-stock' : 'out-stock')">
+              {{ medicine.status }}
+            </span>
+            <input
+              type="number"
+              min="1"
+              class="qty-input"
+              [(ngModel)]="medicine.quantity"
+            />
+            <button type="button" class="btn btn-secondary" (click)="addMedicineToPrescription(medicine, medicine.quantity)">Add</button>
+          </div>
+        </div>
+
+        <div class="selected-list full-width">
+          <h3>Selected Drugs</h3>
+          <div class="selected-row header">
+            <span>Drug</span>
+            <span>Qty</span>
+            <span>Status</span>
+            <span>Action</span>
+          </div>
+          <div class="selected-row" *ngFor="let item of selectedPrescriptionItems">
+            <span>{{ item.medicineName }}</span>
+            <span>{{ item.quantity }}</span>
+            <span>{{ item.status }}</span>
+            <button type="button" class="btn btn-secondary" (click)="removePrescriptionItem(item.medicineId)">Remove</button>
+          </div>
+          <div class="empty-state" *ngIf="selectedPrescriptionItems.length === 0">No drugs selected yet.</div>
+        </div>
+
+        <div class="modal-actions full-width">
+          <button type="button" class="btn btn-secondary" (click)="closePrescriptionModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" [disabled]="savingPrescription" (click)="completePrescription()">
+            {{ savingPrescription ? 'Saving...' : 'Save Prescription' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="modal-overlay" *ngIf="showHistoryModal" (click)="closeHistoryModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Prescription History</h2>
+      <button type="button" class="close-modal" (click)="closeHistoryModal()">×</button>
+    </div>
+
+    <div class="modal-content">
+      <div class="history-summary">
+        <div class="history-title">
+          <h3>{{ selectedHistoryPatientName }}</h3>
+          <p class="history-subtitle">Prescription history and past medication for this patient.</p>
+        </div>
+
+        <div class="patient-details-grid">
+          <div><strong>Age</strong><span>{{ selectedHistoryPatient?.age || 'N/A' }}</span></div>
+          <div><strong>Gender</strong><span>{{ selectedHistoryPatient?.gender || 'N/A' }}</span></div>
+          <div><strong>Category</strong><span>{{ selectedHistoryPatient?.category || 'N/A' }}</span></div>
+          <div><strong>Phone</strong><span>{{ selectedHistoryPatient?.phoneNumber || 'N/A' }}</span></div>
+        </div>
+      </div>
+
+      <div *ngIf="historyLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading prescription history...</p>
+      </div>
+
+      <div *ngIf="historyError && !historyLoading" class="error-state">
+        <p>{{ historyError }}</p>
+      </div>
+
+      <div *ngIf="!historyLoading && !historyError">
+        <div *ngIf="historyEntries.length === 0" class="empty-state">
+          <p>No prescription history available for this patient.</p>
+        </div>
+
+        <div *ngFor="let entry of historyEntries" class="history-entry-card">
+          <div class="history-entry-header">
+            <div class="entry-head-info">
+              <div>
+                <h4>{{ entry.date }}</h4>
+                <p class="doctor-meta">{{ entry.doctorName }} <span *ngIf="entry.doctorEmail">({{ entry.doctorEmail }})</span></p>
+              </div>
+              <div class="entry-notes">{{ entry.notes || 'No additional notes.' }}</div>
+            </div>
+          </div>
+
+          <div class="history-entry-body">
+            <table class="drugs-table">
+              <thead>
+                <tr>
+                  <th>Drug</th>
+                  <th>Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let medicine of entry.medicines">
+                  <td>{{ medicine.medicineName }}</td>
+                  <td>{{ medicine.quantity }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

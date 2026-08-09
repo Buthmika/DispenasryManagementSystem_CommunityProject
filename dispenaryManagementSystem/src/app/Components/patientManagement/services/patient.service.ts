@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, orderBy, Timestamp } from '@angular/fire/firestore';
-import { PatientList } from '../models/patient.interface';
+import { PatientList, PrescriptionEntry } from '../models/patient.interface';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -84,9 +84,52 @@ export class PatientService {
       });
       
       await this.loadPatients(); // Refresh the list
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating patient:', error);
-      throw error;
+      throw new Error(error?.message || error?.code || 'Patient update failed.');
+    }
+  }
+
+  async addPrescription(patientId: string, prescription: Omit<PrescriptionEntry, 'id'>): Promise<string> {
+    try {
+      const prescriptionsCollection = collection(this.firestore, 'patients', patientId, 'prescriptions');
+      const docRef = await addDoc(prescriptionsCollection, {
+        ...prescription,
+        createdAt: Timestamp.now()
+      });
+      return docRef.id;
+    } catch (error: any) {
+      console.error('Error adding prescription:', error);
+      throw new Error(error?.message || error?.code || 'Prescription save failed.');
+    }
+  }
+
+  async getPrescriptionHistory(patientId: string): Promise<PrescriptionEntry[]> {
+    try {
+      const prescriptionsCollection = collection(this.firestore, 'patients', patientId, 'prescriptions');
+      const snapshot = await getDocs(prescriptionsCollection);
+      const entries = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          doctorId: data['doctorId'],
+          doctorName: data['doctorName'],
+          doctorEmail: data['doctorEmail'],
+          date: data['date'],
+          notes: data['notes'],
+          medicines: data['medicines'] || [],
+          createdAt: data['createdAt']
+        } as PrescriptionEntry & { createdAt?: any };
+      });
+
+      return entries.sort((a, b) => {
+        const aTime = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const bTime = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return bTime - aTime;
+      });
+    } catch (error: any) {
+      console.error('Error loading prescription history:', error);
+      throw new Error(error?.message || error?.code || 'Unable to load prescription history.');
     }
   }
 
