@@ -316,6 +316,154 @@
   font-weight: 800;
 }
 
+.inventory-pills {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.inventory-counts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.inventory-line {
+  font-weight: 700;
+  color: #ffffff;
+  background: transparent;
+}
+
+.inventory-line.out {
+  color: #fff7f7;
+}
+
+.inventory-line.low {
+  color: #fffaf0;
+}
+
+.inventory-line.ok {
+  color: #e6f4ea;
+}
+
+.inventory-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.out-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: #fef3c7;
+  color: #92400e;
+  font-weight: 700;
+}
+
+.low-stock-list {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.low-stock-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background-color: #fff5f5;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.inventory-simple {
+  text-align: center;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 8px;
+}
+
+.inventory-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.btn-view-inventory {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4B97FF 0%, #2742A1 100%);
+  color: white;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-view-inventory:hover {
+  opacity: 0.95;
+}
+
+.inventory-filter-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.filter-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #e6eefc;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #4B97FF 0%, #2742A1 100%);
+  color: white;
+}
+
+.inventory-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff7b7b, #dc2626);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(220,38,38,0.2);
+}
+
+.badge-count {
+  color: white;
+  font-weight: 700;
+}
+
+.status-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.status-pill.low {
+  background: #fff7ed;
+  color: #92400e;
+}
+
+.status-pill.out {
+  background: #fff1f2;
+  color: #991b1b;
+}
+
 /* Patient Records Section */
 .patient-records-section {
   background: white;

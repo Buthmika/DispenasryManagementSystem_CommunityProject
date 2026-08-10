@@ -5,6 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { PatientService } from '../patientManagement/services/patient.service';
 import { PatientList } from '../patientManagement/models/patient.interface';
 import { UserManagementService, SystemUser } from '../../services/user-management.service';
+import { MedicineService, Medicine } from '../../services/medicine.service';
+import { Firestore } from '@angular/fire/firestore';
+import { collectionGroup, onSnapshot, Query } from 'firebase/firestore';
+import { OnDestroy } from '@angular/core';
 
 interface PatientRecord {
   name: string;
@@ -48,13 +52,20 @@ interface User {
   templateUrl: './adminDashboard.html',
   styleUrls: ['./adminDashboard.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   
   // Dashboard stats
   patientVisits = 0;
   prescriptions = 876;
   inventoryStatus = 'LOW STOCK';
+  lowStockCount = 0;
+  outOfStockCount = 0;
+  lowStockMedicines: Medicine[] = [];
+  showInventoryModal = false;
+  private prescriptionsUnsubscribe: (() => void) | null = null;
+  // which medicines to show in modal: 'all' | 'low' | 'out'
+  selectedInventoryFilter: 'all' | 'low' | 'out' = 'all';
 
   // Patient records
   patientRecords: PatientRecord[] = [];
@@ -111,12 +122,74 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(
     private patientService: PatientService,
-    private userManagementService: UserManagementService
+    private userManagementService: UserManagementService,
+    private medicineService: MedicineService,
+    private firestore: Firestore
   ) {}
 
   ngOnInit(): void {
     this.loadPatientsData();
     this.loadSystemUsers();
+    // Subscribe to medicine inventory and compute low/out-of-stock counts
+    this.medicineService.medicines$.subscribe((medicines) => {
+      this.lowStockMedicines = medicines.filter(m => m.status === 'Low Stock' || m.status === 'Out of Stock');
+      this.lowStockCount = medicines.filter(m => m.status === 'Low Stock').length;
+      this.outOfStockCount = medicines.filter(m => m.status === 'Out of Stock').length;
+
+      if (this.outOfStockCount > 0) {
+        this.inventoryStatus = `${this.outOfStockCount} Out of Stock`;
+      } else if (this.lowStockCount > 0) {
+        this.inventoryStatus = `${this.lowStockCount} Low Stock`;
+      } else {
+        this.inventoryStatus = 'All Stocked';
+      }
+    });
+
+    // Ensure medicines are loaded at least once
+    this.medicineService.loadMedicines().catch(err => console.error('Failed to load medicines', err));
+
+    // Real-time prescriptions count using collectionGroup on 'prescriptions'
+    try {
+      const q: Query = collectionGroup(this.firestore as any, 'prescriptions');
+      this.prescriptionsUnsubscribe = onSnapshot(q, (snapshot) => {
+        this.prescriptions = snapshot.size;
+      }, (err) => console.error('Prescriptions realtime error', err));
+    } catch (err) {
+      console.error('Failed to subscribe to prescriptions collectionGroup', err);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.prescriptionsUnsubscribe) {
+      this.prescriptionsUnsubscribe();
+      this.prescriptionsUnsubscribe = null;
+    }
+  }
+
+  openInventoryModal(): void {
+    // default: prefer showing Out of Stock if present
+    if (this.outOfStockCount > 0) {
+      this.selectedInventoryFilter = 'out';
+    } else if (this.lowStockCount > 0) {
+      this.selectedInventoryFilter = 'low';
+    } else {
+      this.selectedInventoryFilter = 'all';
+    }
+    this.showInventoryModal = true;
+  }
+
+  closeInventoryModal(): void {
+    this.showInventoryModal = false;
+  }
+
+  get filteredInventory(): Medicine[] {
+    if (this.selectedInventoryFilter === 'out') {
+      return this.lowStockMedicines.filter(m => m.status === 'Out of Stock');
+    }
+    if (this.selectedInventoryFilter === 'low') {
+      return this.lowStockMedicines.filter(m => m.status === 'Low Stock');
+    }
+    return this.lowStockMedicines;
   }
 
   loadSystemUsers(): void {
@@ -156,11 +229,30 @@ export class AdminDashboardComponent implements OnInit {
         this.patientRecords = this.convertToPatientRecords(patients);
         this.patientVisits = patients.length;
         console.log('Admin Dashboard - Patient records:', this.patientRecords);
+        // Update prescriptions count whenever patients change
+        this.updatePrescriptionsCount();
       },
       error: (error) => {
         console.error('Error loading patients in admin dashboard:', error);
       }
     });
+  }
+
+  async updatePrescriptionsCount(): Promise<void> {
+    try {
+      const patientsWithId = this.allPatients.filter(p => !!p.id);
+      if (patientsWithId.length === 0) {
+        this.prescriptions = 0;
+        return;
+      }
+
+      const promises = patientsWithId.map(p => this.patientService.getPrescriptionHistory(p.id!));
+      const results = await Promise.all(promises);
+      const total = results.reduce((sum, arr) => sum + (arr ? arr.length : 0), 0);
+      this.prescriptions = total;
+    } catch (error) {
+      console.error('Error computing prescriptions count:', error);
+    }
   }
 
   convertToPatientRecords(patients: PatientList[]): PatientRecord[] {

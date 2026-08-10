@@ -5,6 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Medicine, MedicineService } from '../../services/medicine.service';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -19,16 +20,26 @@ import { Firestore, doc, getDoc } from '@angular/fire/firestore';
   styleUrls: ['./doctorDashboard.css'] 
 })
 export class DoctorDashboardComponent implements OnInit {
-  doctorName: string = 'Doctor';
-  doctorEmail: string = '';
+  doctorName = 'Doctor';
+  doctorEmail = '';
+  lowStockMedicines: Medicine[] = [];
 
   constructor(
     private authService: AuthService,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private medicineService: MedicineService
   ) { }
 
   async ngOnInit(): Promise<void> {
     await this.loadUserData();
+
+    this.medicineService.medicines$.subscribe((medicines) => {
+      this.lowStockMedicines = medicines.filter(
+        (medicine) => medicine.status === 'Low Stock' || medicine.status === 'Out of Stock'
+      );
+    });
+
+    await this.medicineService.loadMedicines();
   }
 
   async loadUserData(): Promise<void> {

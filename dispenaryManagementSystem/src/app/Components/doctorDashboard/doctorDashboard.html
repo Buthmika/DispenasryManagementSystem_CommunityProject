@@ -19,13 +19,22 @@
       </div>
     </header>
 
-    <section class="alert-banner">
+    <section class="alert-banner" [class.warning-banner]="lowStockMedicines.length > 0">
       <div class="alert-icon">
         <span class="material-symbols-outlined">notifications_active</span>
       </div>
       <div class="alert-text">
-        <strong>Low Stock Alert</strong>
-        <p>Multiple items in your inventory are running low.</p>
+        <strong>
+          {{ lowStockMedicines.length > 0 ? (lowStockMedicines.length === 1 ? '1 medicine is running low' : lowStockMedicines.length + ' medicines are running low') : 'All medicines are sufficiently stocked' }}
+        </strong>
+        <p *ngIf="lowStockMedicines.length > 0; else noLowStockText">
+          <span class="low-stock-pill" *ngFor="let medicine of lowStockMedicines">
+            {{ medicine.medicineName }} (Qty: {{ medicine.quantity }})
+          </span>
+        </p>
+        <ng-template #noLowStockText>
+          <p>No low-stock medicines right now.</p>
+        </ng-template>
       </div>
       <button class="btn btn-primary-clinic" routerLink="/inventory">View Inventory</button>
     </section>

@@ -183,6 +183,12 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   margin-bottom: 32px; 
 }
+
+.alert-banner.warning-banner {
+  border: 1px solid #fecaca;
+  background-color: #fff5f5;
+}
+
 .alert-icon {
   color: #c30101;
   font-size: 30px;
@@ -191,6 +197,12 @@
   border-radius: 16px; 
   margin-right: 16px;
 }
+
+.alert-banner.warning-banner .alert-icon {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
 .alert-text {
   flex-grow: 1;
 }
@@ -199,9 +211,33 @@
   font-size: 18px; 
   color: #334155;
 }
+
+.alert-banner.warning-banner .alert-text strong {
+  color: #b91c1c;
+}
+
 .alert-text p {
   color: #64748B;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.alert-banner.warning-banner .alert-text p {
+  color: #7f1d1d;
+}
+
+.low-stock-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .btn-primary-clinic {

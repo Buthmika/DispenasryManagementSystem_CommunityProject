@@ -85,10 +85,49 @@
             <span class="material-symbols-outlined">inventory_2</span>
           </div>
           <div class="stat-info">
-            <p>Inventory Status</p>
-            <h3 class="warning">{{ inventoryStatus }}</h3>
+                <p>Inventory Status</p>
+                <div class="inventory-counts">
+                  <span *ngIf="outOfStockCount > 0" class="inventory-line out">{{ outOfStockCount }} Out of Stock</span>
+                  <span *ngIf="lowStockCount > 0" class="inventory-line low">{{ lowStockCount }} Low Stock</span>
+                  <span *ngIf="outOfStockCount===0 && lowStockCount===0" class="inventory-line ok">All Stocked</span>
+                </div>
+                <div class="inventory-actions">
+                  <button class="btn-view-inventory" (click)="openInventoryModal()">View</button>
+                </div>
           </div>
         </div>
+
+              <!-- Inventory Low Stock Modal -->
+              <div class="modal-overlay" *ngIf="showInventoryModal" (click)="closeInventoryModal()">
+                <div class="modal-content" (click)="$event.stopPropagation()">
+                  <div class="modal-header">
+                    <h2>Low / Out of Stock Medicines</h2>
+                    <button class="btn-close" (click)="closeInventoryModal()">
+                      <span class="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="inventory-filter-actions">
+                      <button class="filter-btn" [class.active]="selectedInventoryFilter==='all'" (click)="selectedInventoryFilter='all'">All</button>
+                      <button class="filter-btn" [class.active]="selectedInventoryFilter==='low'" (click)="selectedInventoryFilter='low'">Low Stock</button>
+                      <button class="filter-btn" [class.active]="selectedInventoryFilter==='out'" (click)="selectedInventoryFilter='out'">Out of Stock</button>
+                    </div>
+
+                    <div *ngIf="filteredInventory.length === 0" class="permission-empty">No medicines match the selected filter.</div>
+                    <div *ngIf="filteredInventory.length > 0" class="permissions-list">
+                      <div *ngFor="let m of filteredInventory" class="permission-item">
+                        <div class="permission-user-info">
+                          <h4>{{ m.medicineName }}</h4>
+                          <p style="margin:4px 0 0 0; color:#64748b">Qty: {{ m.quantity }}</p>
+                        </div>
+                        <div style="align-self:center">
+                          <span [ngClass]="{'status-pill': true, 'low': m.status==='Low Stock', 'out': m.status==='Out of Stock'}">{{ m.status }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
       </div>
     </section>
 
