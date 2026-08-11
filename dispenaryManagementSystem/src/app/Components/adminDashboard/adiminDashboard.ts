@@ -8,7 +8,10 @@ import { UserManagementService, SystemUser } from '../../services/user-managemen
 import { MedicineService, Medicine } from '../../services/medicine.service';
 import { Firestore } from '@angular/fire/firestore';
 import { collectionGroup, onSnapshot, Query } from 'firebase/firestore';
+import { NotificationService, NotificationItem } from '../../services/notification.service';
 import { OnDestroy } from '@angular/core';
+
+type DashboardNotification = NotificationItem & { time?: string };
 
 interface PatientRecord {
   name: string;
@@ -17,13 +20,6 @@ interface PatientRecord {
   gender: string;
   lastVisit: string;
   status: 'active' | 'inactive';
-}
-
-interface Notification {
-  type: 'success' | 'info' | 'warning';
-  message: string;
-  time: string;
-  icon: string;
 }
 
 interface UserRole {
@@ -72,26 +68,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   allPatients: PatientList[] = [];
 
   // Notifications
-  notifications: Notification[] = [
-    {
-      type: 'success',
-      message: 'Weekly report sent successfully.',
-      time: '1 hour ago',
-      icon: 'check_circle'
-    },
-    {
-      type: 'info',
-      message: 'Appointment reminders sent.',
-      time: '3 hour ago',
-      icon: 'event'
-    },
-    {
-      type: 'warning',
-      message: 'Password change for Dr. Indika',
-      time: 'Yesterday',
-      icon: 'warning'
-    }
-  ];
+  notifications: DashboardNotification[] = [];
+
+  private notificationUnsubscribe: (() => void) | null = null;
 
   // User roles
   userRoles: UserRole[] = [
@@ -124,12 +103,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     private patientService: PatientService,
     private userManagementService: UserManagementService,
     private medicineService: MedicineService,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     this.loadPatientsData();
     this.loadSystemUsers();
+    this.subscribeNotifications();
+
     // Subscribe to medicine inventory and compute low/out-of-stock counts
     this.medicineService.medicines$.subscribe((medicines) => {
       this.lowStockMedicines = medicines.filter(m => m.status === 'Low Stock' || m.status === 'Out of Stock');
@@ -163,6 +145,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     if (this.prescriptionsUnsubscribe) {
       this.prescriptionsUnsubscribe();
       this.prescriptionsUnsubscribe = null;
+    }
+    if (this.notificationUnsubscribe) {
+      this.notificationUnsubscribe();
+      this.notificationUnsubscribe = null;
     }
   }
 
@@ -235,6 +221,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error loading patients in admin dashboard:', error);
       }
+    });
+  }
+
+  subscribeNotifications(): void {
+    this.notificationUnsubscribe = this.notificationService.subscribeNotifications((items) => {
+      this.notifications = items;
     });
   }
 

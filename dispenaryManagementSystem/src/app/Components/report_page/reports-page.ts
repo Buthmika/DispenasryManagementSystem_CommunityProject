@@ -11,6 +11,7 @@ import { SideBar } from '../core/side-bar/side-bar';
 import { PatientService } from '../../services/patient.service';
 import { MedicineService, Medicine } from '../../services/medicine.service';
 import { Patient } from '../../models/patient.model';
+import { NotificationService } from '../../services/notification.service';
 
 // PDF Libraries
 import jsPDF from 'jspdf';
@@ -27,6 +28,7 @@ export class ReportsPageComponent implements OnInit, OnDestroy {
 
   private patientService = inject(PatientService);
   private medicineService = inject(MedicineService);
+  private notificationService = inject(NotificationService);
   private patientsSubscription?: Subscription; 
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
@@ -233,6 +235,20 @@ export class ReportsPageComponent implements OnInit, OnDestroy {
         }
       });
       doc.save('Inventory_Report_Colorful.pdf');
+
+      this.notificationService.addNotification({
+        type: 'success',
+        icon: 'download',
+        message: 'Inventory report downloaded successfully.',
+        time: 'Just now'
+      }).catch(err => console.error('Notification save failed:', err));
+
+      this.notificationService.addNotification({
+        type: 'info',
+        icon: 'event',
+        message: 'Appointment reminders will be sent after report download.',
+        time: 'Just now'
+      }).catch(err => console.error('Notification save failed:', err));
     });
   }
 }

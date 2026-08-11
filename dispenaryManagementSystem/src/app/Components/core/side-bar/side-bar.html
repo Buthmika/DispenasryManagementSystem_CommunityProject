@@ -9,7 +9,7 @@
   </div>
 
   <nav class="menu">
-    <a routerLink="/dashboard" routerLinkActive="active">
+    <a routerLink="/doctor-dashboard" routerLinkActive="active">
       <i class="material-icons">dashboard</i> Dashboard
     </a>
 
@@ -25,7 +25,7 @@
       <i class="material-icons">analytics</i> Reports & Analytics
     </a>
 
-    <a routerLink="/settings" routerLinkActive="active">
+    <a *ngIf="(authService.currentUserRole$ | async) === 'doctor'" routerLink="/settings" routerLinkActive="active">
       <i class="material-icons">settings</i> Settings
     </a>
   </nav>

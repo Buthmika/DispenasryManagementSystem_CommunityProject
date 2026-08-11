@@ -11,6 +11,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { Inventory } from './Components/inventory/inventory';
 import { AdminDashboardComponent } from './Components/adminDashboard/adiminDashboard';
 import { ReportsPageComponent } from './Components/report_page/reports-page';
+import { SettingsComponent } from './Components/settings/settings';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,11 +19,12 @@ export const routes: Routes = [
 	{ path: 'register', component: RegisterComponent },
 	{ path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },
 	{ path: 'doctor-dashboard', component: DoctorDashboardComponent, canActivate: [AuthGuard] },
-	{path:'patientForm', component: PatientFormComponent, canActivate: [AuthGuard]},
-	{path:'patientList', component: PatientListComponent, canActivate: [AuthGuard]},
-	{path:'sidebar',component: SideBar, canActivate: [AuthGuard]},
-	{path:'patient-management', component: PatientManagementPageComponent, canActivate: [AuthGuard]},
-	{path:'add-patient', component: AddPatientComponent, canActivate: [AuthGuard]},
-	{path:'inventory', component: Inventory, canActivate: [AuthGuard]},
+	{ path: 'patientForm', component: PatientFormComponent, canActivate: [AuthGuard] },
+	{ path: 'patientList', component: PatientListComponent, canActivate: [AuthGuard] },
+	{ path: 'sidebar', component: SideBar, canActivate: [AuthGuard] },
+	{ path: 'patient-management', component: PatientManagementPageComponent, canActivate: [AuthGuard] },
+	{ path: 'add-patient', component: AddPatientComponent, canActivate: [AuthGuard] },
+	{ path: 'inventory', component: Inventory, canActivate: [AuthGuard] },
+	{ path: 'settings', component: SettingsComponent, canActivate: [AuthGuard], data: { role: 'doctor' } },
 	{ path: 'reports', component: ReportsPageComponent, canActivate: [AuthGuard] }
 ];
