@@ -27,7 +27,7 @@ export class MedicineService {
       return 'Out of Stock';
     }
 
-    if (quantity < 50) {
+    if (quantity <= 50) {
       return 'Low Stock';
     }
 
@@ -48,11 +48,7 @@ export class MedicineService {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const quantity = Number(data['quantity'] || 0);
-        const storedStatus = data['status'] as Medicine['status'] | undefined;
-        const status: Medicine['status'] =
-          storedStatus === 'In Stock' || storedStatus === 'Low Stock' || storedStatus === 'Out of Stock'
-            ? storedStatus
-            : this.getStatusFromQuantity(quantity);
+        const status: Medicine['status'] = this.getStatusFromQuantity(quantity);
         medicines.push({
           id: doc.id,
           medicineId: data['medicineId'] || doc.id,
@@ -84,7 +80,7 @@ export class MedicineService {
       const medicineId = `MED${String(nextId).padStart(3, '0')}`; // MED001, MED002, etc.
       
       const quantity = Number(medicine.quantity || 0);
-      const status = medicine.status || this.getStatusFromQuantity(quantity);
+      const status = this.getStatusFromQuantity(quantity);
       
       const docRef = await addDoc(medicinesCollection, {
         medicineId: medicineId,
@@ -117,9 +113,7 @@ export class MedicineService {
       if (medicine.quantity !== undefined) {
         const quantity = Number(medicine.quantity || 0);
         updateData.quantity = quantity;
-        if (!medicine.status) {
-          updateData.status = this.getStatusFromQuantity(quantity);
-        }
+        updateData.status = this.getStatusFromQuantity(quantity);
       }
       
       await updateDoc(medicineDoc, {
