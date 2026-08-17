@@ -138,31 +138,6 @@
           />
         </div>
 
-        <div class="medicine-table full-width">
-          <div class="medicine-row header">
-            <span>Drug</span>
-            <span>Status</span>
-            <span>Qty</span>
-            <span>Action</span>
-          </div>
-          <div class="medicine-row" *ngFor="let medicine of filteredMedicines">
-            <span>{{ medicine.medicineName }}</span>
-            <span class="status-chip" [ngClass]="medicine.status === 'In Stock' ? 'in-stock' : (medicine.status === 'Low Stock' ? 'low-stock' : 'out-stock')">
-              {{ medicine.status }}
-            </span>
-            <input
-              type="number"
-              min="1"
-              [max]="medicine.quantity"
-              class="qty-input"
-              [(ngModel)]="issueQuantities[medicine.id || '']"
-              [ngModelOptions]="{ standalone: true }"
-              placeholder="Issue qty"
-            />
-            <button type="button" class="btn btn-secondary" (click)="addMedicineToPrescription(medicine, issueQuantities[medicine.id || ''] || 1)">Add</button>
-          </div>
-        </div>
-
         <div class="selected-list full-width">
           <h3>Selected Drugs</h3>
           <div class="selected-row header">
@@ -178,6 +153,33 @@
             <button type="button" class="btn btn-secondary" (click)="removePrescriptionItem(item.medicineId)">Remove</button>
           </div>
           <div class="empty-state" *ngIf="selectedPrescriptionItems.length === 0">No drugs selected yet.</div>
+        </div>
+
+        <div class="medicine-table full-width">
+          <div class="medicine-row header">
+            <span>Drug</span>
+            <span>Status</span>
+            <span>Qty</span>
+            <span>Action</span>
+          </div>
+          <div class="medicine-row" *ngFor="let medicine of filteredMedicines">
+            <span>{{ medicine.medicineName }}</span>
+            <span class="status-chip" [ngClass]="medicine.status === 'In Stock' ? 'in-stock' : (medicine.status === 'Low Stock' ? 'low-stock' : 'out-stock')">
+              {{ medicine.status }}
+            </span>
+            <div class="medicine-action">
+              <input
+                type="number"
+                min="1"
+                [max]="medicine.quantity"
+                class="qty-input"
+                [(ngModel)]="issueQuantities[medicine.id || '']"
+                [ngModelOptions]="{ standalone: true }"
+                placeholder="Issue qty"
+              />
+            </div>
+            <button type="button" class="btn btn-secondary" (click)="addMedicineToPrescription(medicine, issueQuantities[medicine.id || ''] || 1)">Add</button>
+          </div>
         </div>
 
         <div class="modal-actions full-width">
