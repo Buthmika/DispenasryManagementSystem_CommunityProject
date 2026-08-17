@@ -290,8 +290,8 @@
 .medicine-row,
 .selected-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 2.2fr 1.2fr 1fr 0.8fr;
+  gap: 10px;
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #f3f4f6;
@@ -302,6 +302,12 @@
   font-weight: 700;
   color: #374151;
   border-bottom: 1px solid #d1d5db;
+}
+
+.medicine-action {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .status-chip {
@@ -331,10 +337,18 @@
 
 .qty-input {
   width: 100%;
-  padding: 10px 12px;
+  max-width: 110px;
+  padding: 8px 10px;
   border: 1px solid #d1d5db;
   border-radius: 10px;
   background: #f8fafc;
+}
+
+.medicine-row .btn,
+.selected-row .btn {
+  min-width: 72px;
+  padding: 8px 12px;
+  justify-content: center;
 }
 
 .selected-row span,
