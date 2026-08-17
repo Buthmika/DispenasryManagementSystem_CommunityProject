@@ -245,7 +245,7 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.selectedPrescriptionItems.push({
+    this.selectedPrescriptionItems.unshift({
       medicineId: medicine.id,
       medicineName: medicine.medicineName,
       status: medicine.status,
