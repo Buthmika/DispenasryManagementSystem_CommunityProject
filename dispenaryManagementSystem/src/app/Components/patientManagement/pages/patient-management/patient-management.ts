@@ -178,7 +178,7 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
     this.selectedPatientName = '';
     this.selectedPatientPhone = '';
     this.medicineSearchTerm = '';
-    this.filteredMedicines = this.availableMedicines;
+    this.filteredMedicines = [];
     this.selectedPrescriptionItems = [];
     this.issueQuantities = {};
   }
@@ -212,15 +212,19 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
   searchMedicinesForPrescription(): void {
     const term = this.medicineSearchTerm.trim().toLowerCase();
     if (!term) {
-      this.filteredMedicines = this.availableMedicines;
+      this.filteredMedicines = [];
       return;
     }
 
-    this.filteredMedicines = this.availableMedicines.filter((medicine) =>
-      medicine.medicineName.toLowerCase().includes(term) ||
-      medicine.medicineId.toLowerCase().includes(term) ||
-      (medicine.batchNumber || '').toLowerCase().includes(term)
-    );
+    this.filteredMedicines = this.availableMedicines.filter((medicine) => {
+      const medicineName = (medicine.medicineName || '').toLowerCase();
+      const medicineId = (medicine.medicineId || '').toLowerCase();
+      const batchNumber = (medicine.batchNumber || '').toLowerCase();
+
+      return medicineName.includes(term) ||
+        medicineId.includes(term) ||
+        batchNumber.includes(term);
+    });
   }
 
   addMedicineToPrescription(medicine: Medicine, quantity: number): void {
@@ -251,6 +255,9 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
       status: medicine.status,
       quantity
     });
+
+    this.medicineSearchTerm = '';
+    this.filteredMedicines = [];
   }
 
   removePrescriptionItem(medicineId: string): void {
