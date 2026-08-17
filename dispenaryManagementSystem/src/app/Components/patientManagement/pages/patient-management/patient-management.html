@@ -162,6 +162,11 @@
             <span>Qty</span>
             <span>Action</span>
           </div>
+
+          <div class="empty-state" *ngIf="filteredMedicines.length === 0">
+            No matching medicine found. Type a medicine name or code to search.
+          </div>
+
           <div class="medicine-row" *ngFor="let medicine of filteredMedicines">
             <span>{{ medicine.medicineName }}</span>
             <span class="status-chip" [ngClass]="medicine.status === 'In Stock' ? 'in-stock' : (medicine.status === 'Low Stock' ? 'low-stock' : 'out-stock')">
