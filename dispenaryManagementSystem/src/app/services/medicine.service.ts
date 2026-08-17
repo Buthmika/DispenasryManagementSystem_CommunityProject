@@ -23,7 +23,7 @@ export class MedicineService {
   public medicines$ = this.medicinesSubject.asObservable();
 
   private getStatusFromQuantity(quantity: number): Medicine['status'] {
-    if (quantity <= 0) {
+    if (quantity === 0) {
       return 'Out of Stock';
     }
 
