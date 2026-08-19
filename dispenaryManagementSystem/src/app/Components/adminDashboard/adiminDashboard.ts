@@ -430,20 +430,20 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         }, this.currentUser.password);
         
         if (result.success) {
-          const loginInstructions = `✅ Account Created Successfully!
+          const emailStatus = result.error
+            ? `Email status: Not sent\nReason: ${result.error}`
+            : 'Email status: Password setup email sent';
+          const loginInstructions = `Name: ${this.currentUser.fullName}
+Email: ${this.currentUser.email}
+Role: ${this.currentUser.role}
 
-👤 Name: ${this.currentUser.fullName}
-📧 Email: ${this.currentUser.email}
-🔑 Password: ${this.currentUser.password}
-👔 Job Role: ${this.currentUser.role}
+Account status: Created successfully
+Database status: Saved
+${emailStatus}
 
-✓ Saved to database
-✓ Login details prepared
-✓ Email sent to user
-
-The user can now log in with the email and password sent by the admin.`;
+The user can open the email to create a password.`;
           
-          this.dialogService.show(loginInstructions, 'success', 'User created');
+          this.dialogService.show(loginInstructions, 'success', 'Account ready');
           this.closeModal();
         } else {
           this.dialogService.show(`Error creating user:\n\n${result.error}\n\nUser was NOT saved to database.`, 'error');
