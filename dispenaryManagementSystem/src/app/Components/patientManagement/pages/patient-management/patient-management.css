@@ -71,6 +71,29 @@
   }
 }
 
+@media (max-width: 768px) {
+  .patient-management-page {
+    display: block;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex: none;
+  }
+
+  .main-content {
+    min-width: 0;
+  }
+
+  .page-header {
+    padding: 18px 16px;
+  }
+
+  .header-text .page-title {
+    font-size: 24px;
+  }
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;

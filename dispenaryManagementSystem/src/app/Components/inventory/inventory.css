@@ -341,6 +341,27 @@
   background: #ff5252;
 }
 
+@media (max-width: 768px) {
+  .inventory-layout {
+    flex-direction: column;
+  }
+
+  .page-bg {
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .inventory-card {
+    padding: 14px;
+    overflow: hidden;
+  }
+
+  .inventory-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .page-bg {

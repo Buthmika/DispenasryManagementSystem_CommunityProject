@@ -6,7 +6,7 @@
         <p>Here's your dashboard overview.</p>
       </div>
       <div class="header-actions">
-        <button class="btn-icon">
+        <button class="btn-icon" [class.stock-warning-icon]="lowStockMedicines.length > 0" aria-label="Stock notifications">
           <span class="material-symbols-outlined">notifications</span>
         </button>
         <div class="user-profile">
@@ -19,7 +19,7 @@
       </div>
     </header>
 
-    <section class="alert-banner" [class.warning-banner]="lowStockMedicines.length > 0">
+    <section class="alert-banner warning-banner" *ngIf="lowStockMedicines.length > 0">
       <div class="alert-icon">
         <span class="material-symbols-outlined">notifications_active</span>
       </div>
