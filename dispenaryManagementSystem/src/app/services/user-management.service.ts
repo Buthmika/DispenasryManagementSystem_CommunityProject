@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, setDoc } from '@angular/fire/firestore';
-import { Auth, createUserWithEmailAndPassword, getAuth } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail } from '@angular/fire/auth';
 import { initializeApp } from 'firebase/app';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -89,11 +89,20 @@ export class UserManagementService {
         updatedAt: new Date()
       });
 
+      let emailError: string | undefined;
+      try {
+        // Send a secure Firebase password setup link to the new user.
+        await sendPasswordResetEmail(this.provisionAuth, user.email);
+      } catch (error: any) {
+        console.error('Password setup email failed:', error);
+        emailError = this.getEmailError(error);
+      }
+
       await this.loadUsers();
 
       // End the temporary provisioning session so the main admin session stays untouched.
       await this.provisionAuth.signOut();
-      return { success: true, userId: firebaseUserId };
+      return { success: true, userId: firebaseUserId, error: emailError };
     } catch (error: any) {
       console.error('Error creating user:', error);
       let errorMessage = 'Failed to create user';
@@ -110,6 +119,19 @@ export class UserManagementService {
       
       return { success: false, error: errorMessage };
     }
+  }
+
+  private getEmailError(error: any): string {
+    if (error?.code === 'auth/invalid-email') {
+      return 'The email address is invalid.';
+    }
+    if (error?.code === 'auth/too-many-requests') {
+      return 'Too many email requests. Please wait and try again.';
+    }
+    if (error?.code === 'auth/network-request-failed') {
+      return 'Network error while sending the email.';
+    }
+    return 'Firebase could not send the email. Check Authentication email templates and authorized domains.';
   }
 
   async updateUser(userId: string, updates: Partial<SystemUser>): Promise<{ success: boolean; error?: string }> {
