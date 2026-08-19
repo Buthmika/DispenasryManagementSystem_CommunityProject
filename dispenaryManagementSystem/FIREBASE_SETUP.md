@@ -61,6 +61,37 @@ Document ID: [User UID from Authentication]
 - Each user must have a corresponding Firestore document with their role
 - Change default passwords after first login
 
+## Password Setup Email Template
+
+The application sends Firebase's password-reset email after an admin creates an account. Organize the email in Firebase Console:
+
+1. Open **Authentication** → **Templates** → **Password reset**.
+2. Set the sender name to `Dispensary Management System`.
+3. Use this subject:
+
+```
+Set up your Dispensary Management System password
+```
+
+4. Use this message:
+
+```
+Hello,
+
+Your Dispensary Management System account has been created.
+
+Click the button below to create your password and activate your account:
+
+%LINK%
+
+This link is personal to you. If you did not expect this email, you can safely ignore it.
+
+Regards,
+Dispensary Management System
+```
+
+Firebase may display the password action link as a button automatically. Do not include or email the temporary password; the user creates a secure password through this link.
+
 ## Firestore Rules
 The app reads `users/{uid}` after Firebase Auth login, so Firestore must allow a signed-in user to read their own document.
 
