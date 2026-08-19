@@ -6,6 +6,7 @@ import { RouterOutlet } from '@angular/router';
 import { SideBar } from '../core/side-bar/side-bar';
 import { MedicineService, Medicine } from '../../services/medicine.service';
 import { Subscription } from 'rxjs';
+import { DialogService } from '../../services/dialog.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -33,7 +34,8 @@ export class Inventory implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private medicineService: MedicineService
+    private medicineService: MedicineService,
+    private dialogService: DialogService
   ) {
     this.medicineForm = this.fb.group({
       medicineName: ['', [Validators.required, Validators.minLength(2)]],
@@ -213,7 +215,7 @@ export class Inventory implements OnInit, OnDestroy {
       this.closeModal();
     } catch (error) {
       console.error('Error saving medicine:', error);
-      alert('Failed to save medicine. Please try again.');
+      this.dialogService.show('Failed to save medicine. Please try again.', 'error');
     } finally {
       this.loading = false;
     }
@@ -223,13 +225,13 @@ export class Inventory implements OnInit, OnDestroy {
   async deleteMedicine(id: string | undefined): Promise<void> {
     if (!id) return;
     
-    if (confirm('Are you sure you want to delete this medicine?')) {
+    if (await this.dialogService.confirmAction('Are you sure you want to delete this medicine?', 'Delete medicine?')) {
       this.loading = true;
       try {
         await this.medicineService.deleteMedicine(id);
       } catch (error) {
         console.error('Error deleting medicine:', error);
-        alert('Failed to delete medicine. Please try again.');
+        this.dialogService.show('Failed to delete medicine. Please try again.', 'error');
       } finally {
         this.loading = false;
       }
@@ -240,14 +242,14 @@ export class Inventory implements OnInit, OnDestroy {
   async deleteFromModal(): Promise<void> {
     if (!this.editingMedicineId) return;
     
-    if (confirm('Are you sure you want to delete this medicine?')) {
+    if (await this.dialogService.confirmAction('Are you sure you want to delete this medicine?', 'Delete medicine?')) {
       this.loading = true;
       try {
         await this.medicineService.deleteMedicine(this.editingMedicineId);
         this.closeModal();
       } catch (error) {
         console.error('Error deleting medicine:', error);
-        alert('Failed to delete medicine. Please try again.');
+        this.dialogService.show('Failed to delete medicine. Please try again.', 'error');
       } finally {
         this.loading = false;
       }
@@ -457,7 +459,7 @@ export class Inventory implements OnInit, OnDestroy {
     doc.save(fileName);
 
     // Show success message
-    alert(`Report generated successfully!\nFile: ${fileName}`);
+    this.dialogService.show(`Report generated successfully!\nFile: ${fileName}`, 'success', 'Report ready');
   }
 
   // Check if medicine is expiring soon (within 3 months)
