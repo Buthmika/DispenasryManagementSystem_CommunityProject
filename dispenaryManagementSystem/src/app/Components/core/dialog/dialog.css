@@ -15,8 +15,8 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 16px;
-  width: min(440px, 100%);
-  padding: 26px;
+  width: min(500px, 100%);
+  padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 18px;
   background: #ffffff;
@@ -38,8 +38,9 @@
 .dialog-icon.warning { color: #b35c00; background: #fff1cc; }
 .dialog-icon.info { color: #1864ab; background: #dbeafe; }
 
-.dialog-content h2 { margin: 2px 0 7px; color: #172033; font-size: 18px; }
-.dialog-content p { margin: 0; color: #526071; font-size: 14px; line-height: 1.6; white-space: pre-line; }
+.dialog-content h2 { margin: 2px 0 10px; color: #172033; font-size: 19px; }
+.dialog-content p { margin: 0; color: #526071; font-size: 14px; line-height: 1.75; white-space: pre-line; }
+.dialog-content p::first-line { color: #172033; font-weight: 600; }
 .dialog-actions { grid-column: 2; display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
 .button { min-width: 86px; padding: 10px 18px; border: 0; border-radius: 9px; font: inherit; font-weight: 600; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease; }
 .button:hover { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(15, 23, 42, 0.14); }
