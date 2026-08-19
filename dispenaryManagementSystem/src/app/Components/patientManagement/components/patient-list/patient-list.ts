@@ -6,6 +6,7 @@ import { PatientCategory } from '../../constants/patients.constants';
 import { CATEGORY_OPTIONS, GENDER_OPTIONS } from '../../constants/patients.constants';
 import { SampleDataService } from '../../services/sample-data.service';
 import { MatIconModule } from '@angular/material/icon';
+import { DialogService } from '../../../../services/dialog.service';
 
 @Component({
   selector: 'app-patient-list',
@@ -46,7 +47,7 @@ export class PatientListComponent implements OnInit {
   
   private sampleDataService: SampleDataService;
 
-  constructor() {
+  constructor(private dialogService: DialogService) {
     this.sampleDataService = new SampleDataService();
   }
 
@@ -164,9 +165,9 @@ export class PatientListComponent implements OnInit {
     this.patientEdit.emit(patientId);
   }
 
-  onPatientDelete(patientId: string, event: Event): void {
+  async onPatientDelete(patientId: string, event: Event): Promise<void> {
     event.stopPropagation();
-    if (confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
+    if (await this.dialogService.confirmAction('Are you sure you want to delete this patient? This action cannot be undone.', 'Delete patient?')) {
       this.patientDelete.emit(patientId);
     }
   }
