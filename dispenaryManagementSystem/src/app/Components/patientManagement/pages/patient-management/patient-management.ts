@@ -9,6 +9,7 @@ import { PatientService } from '../../services/patient.service';
 import { MedicineService, Medicine } from '../../../../services/medicine.service';
 import { AuthService } from '../../../../services/auth.service';
 import { Subscription } from 'rxjs';
+import { DialogService } from '../../../../services/dialog.service';
 
 @Component({
   selector: 'app-patient-management-page',
@@ -55,7 +56,8 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private patientService: PatientService,
     private medicineService: MedicineService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -142,14 +144,14 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
   }
 
   async onPatientDelete(patientId: string): Promise<void> {
-    if (confirm('Are you sure you want to delete this patient?')) {
+    if (await this.dialogService.confirmAction('Are you sure you want to delete this patient?', 'Delete patient?')) {
       try {
         this.loading = true;
         await this.patientService.deletePatient(patientId);
-        alert('Patient deleted successfully!');
+        this.dialogService.show('Patient deleted successfully!', 'success');
       } catch (error) {
         console.error('Error deleting patient:', error);
-        alert('Failed to delete patient. Please try again.');
+        this.dialogService.show('Failed to delete patient. Please try again.', 'error');
       } finally {
         this.loading = false;
       }
@@ -233,13 +235,13 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
     }
 
     if (quantity <= 0) {
-      alert('Please choose a valid quantity greater than 0.');
+      this.dialogService.show('Please choose a valid quantity greater than 0.', 'warning');
       return;
     }
 
     const available = medicine.quantity || 0;
     if (quantity > available) {
-      alert(`Cannot issue more than available stock (${available}).`);
+      this.dialogService.show(`Cannot issue more than available stock (${available}).`, 'warning');
       return;
     }
 
@@ -266,12 +268,12 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
 
   async completePrescription(): Promise<void> {
     if (!this.selectedPatientId) {
-      alert('Please select the correct patient first.');
+      this.dialogService.show('Please select the correct patient first.', 'warning');
       return;
     }
 
     if (this.selectedPrescriptionItems.length === 0) {
-      alert('Please add at least one drug to the prescription.');
+      this.dialogService.show('Please add at least one drug to the prescription.', 'warning');
       return;
     }
 
@@ -311,12 +313,12 @@ export class PatientManagementPageComponent implements OnInit, OnDestroy {
         lastVisitDate: formattedDate
       });
 
-      alert(`Prescription saved for ${this.selectedPatientName}.`);
+      this.dialogService.show(`Prescription saved for ${this.selectedPatientName}.`, 'success');
       this.closePrescriptionModal();
     } catch (error: any) {
       console.error('Error saving prescription:', error);
       const message = error?.message || error?.code || 'Failed to save prescription. Please try again.';
-      alert(`Failed to save prescription: ${message}`);
+      this.dialogService.show(`Failed to save prescription: ${message}`, 'error');
     } finally {
       this.savingPrescription = false;
     }
