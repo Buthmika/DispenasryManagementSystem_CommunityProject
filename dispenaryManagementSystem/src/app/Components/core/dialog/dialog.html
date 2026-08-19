@@ -1,0 +1,26 @@
+@if (dialogService.dialog(); as dialog) {
+  <div class="dialog-backdrop" role="presentation" (click)="dialog.confirm ? null : close(false)">
+    <section class="dialog" role="alertdialog" aria-modal="true" [attr.aria-label]="dialog.title" (click)="$event.stopPropagation()">
+      <div class="dialog-icon" [class]="dialog.type">
+        @switch (dialog.type) {
+          @case ('success') { <span>✓</span> }
+          @case ('error') { <span>!</span> }
+          @case ('warning') { <span>?</span> }
+          @default { <span>i</span> }
+        }
+      </div>
+      <div class="dialog-content">
+        <h2>{{ dialog.title }}</h2>
+        <p>{{ dialog.message }}</p>
+      </div>
+      <div class="dialog-actions">
+        @if (dialog.confirm) {
+          <button class="button secondary" type="button" (click)="close(false)">Cancel</button>
+          <button class="button primary" type="button" (click)="close(true)">Continue</button>
+        } @else {
+          <button class="button primary" type="button" (click)="close(true)">OK</button>
+        }
+      </div>
+    </section>
+  </div>
+}
