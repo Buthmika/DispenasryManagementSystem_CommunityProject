@@ -10,6 +10,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { collectionGroup, onSnapshot, Query } from 'firebase/firestore';
 import { NotificationService, NotificationItem } from '../../services/notification.service';
 import { OnDestroy } from '@angular/core';
+import { DialogService } from '../../services/dialog.service';
 
 type DashboardNotification = NotificationItem & { time?: string };
 
@@ -104,7 +105,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     private userManagementService: UserManagementService,
     private medicineService: MedicineService,
     private firestore: Firestore,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -338,20 +340,20 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   async removePermissionUser(user: SystemUser): Promise<void> {
     if (!user.id) {
-      alert('❌ Error: User id not found');
+      this.dialogService.show('User id not found', 'error');
       return;
     }
 
-    const confirmed = confirm(`Remove ${user.fullName} (${user.role}) from user permissions list?`);
+    const confirmed = await this.dialogService.confirmAction(`Remove ${user.fullName} (${user.role}) from user permissions list?`, 'Remove user?');
     if (!confirmed) {
       return;
     }
 
     const result = await this.userManagementService.deleteUser(user.id);
     if (result.success) {
-      alert('✅ User removed from permissions list.');
+      this.dialogService.show('User removed from permissions list.', 'success');
     } else {
-      alert(`❌ Error removing user:\n\n${result.error}`);
+      this.dialogService.show(`Error removing user:\n\n${result.error}`, 'error');
     }
   }
 
@@ -383,12 +385,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   async saveUser(): Promise<void> {
     // Validate form
     if (!this.currentUser.username || !this.currentUser.email || !this.currentUser.role || !this.currentUser.fullName) {
-      alert('❌ Error: Please fill in all required fields');
+      this.dialogService.show('Please fill in all required fields', 'warning');
       return;
     }
 
     if (!this.isEditMode && !this.currentUser.password) {
-      alert('❌ Error: Password is required for new users');
+      this.dialogService.show('Password is required for new users', 'warning');
       return;
     }
 
@@ -412,10 +414,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           });
           
           if (result.success) {
-            alert(`✅ Success!\n\nUser "${this.currentUser.username}" has been updated successfully!`);
+            this.dialogService.show(`User "${this.currentUser.username}" has been updated successfully!`, 'success');
             this.closeModal();
           } else {
-            alert(`❌ Error updating user:\n\n${result.error}`);
+            this.dialogService.show(`Error updating user:\n\n${result.error}`, 'error');
           }
         }
       } else {
@@ -441,15 +443,15 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
 The user can now log in with the email and password sent by the admin.`;
           
-          alert(loginInstructions);
+          this.dialogService.show(loginInstructions, 'success', 'User created');
           this.closeModal();
         } else {
-          alert(`❌ Error Creating User:\n\n${result.error}\n\nUser was NOT saved to database.`);
+          this.dialogService.show(`Error creating user:\n\n${result.error}\n\nUser was NOT saved to database.`, 'error');
         }
       }
     } catch (error: any) {
       console.error('Error saving user:', error);
-      alert(`❌ Unexpected Error:\n\n${error.message || 'Failed to save user'}\n\nUser was NOT saved to database.`);
+      this.dialogService.show(`Unexpected error:\n\n${error.message || 'Failed to save user'}\n\nUser was NOT saved to database.`, 'error');
     } finally {
       // Restore button state
       if (saveButton) {
