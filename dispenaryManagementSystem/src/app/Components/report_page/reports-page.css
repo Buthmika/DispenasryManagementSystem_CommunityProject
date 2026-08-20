@@ -2,7 +2,8 @@
 .page-wrapper {
   display: flex; /* Puts Sidebar and Content side-by-side */
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: #F3F4F6;
 }
 
@@ -11,9 +12,10 @@
   flex: 1; /* Takes up remaining space next to sidebar */
   padding: 30px;
   background-color: #F3F4F6;
-  min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
+  min-width: 0;
+  height: 100vh;
   overflow-y: auto; /* Allows scrolling */
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Header Section */
@@ -165,10 +167,14 @@
 @media (max-width: 768px) {
   .page-wrapper {
     display: block;
+    height: 100vh;
+    overflow-y: auto;
   }
 
   .reports-container {
     min-width: 0;
+    height: auto;
+    overflow: visible;
     padding: 18px 16px;
   }
 
