@@ -1,6 +1,7 @@
 .patient-management-page {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: #f8f9fa;
 }
 
@@ -15,6 +16,8 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
+  min-width: 0;
+  height: 100vh;
 }
 
 /* Header Styles */
@@ -74,6 +77,8 @@
 @media (max-width: 768px) {
   .patient-management-page {
     display: block;
+    height: 100vh;
+    overflow-y: auto;
   }
 
   .sidebar {
@@ -83,6 +88,8 @@
 
   .main-content {
     min-width: 0;
+    height: auto;
+    overflow: visible;
   }
 
   .page-header {
