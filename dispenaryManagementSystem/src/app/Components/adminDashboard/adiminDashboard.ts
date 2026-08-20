@@ -6,11 +6,12 @@ import { PatientService } from '../patientManagement/services/patient.service';
 import { PatientList } from '../patientManagement/models/patient.interface';
 import { UserManagementService, SystemUser } from '../../services/user-management.service';
 import { MedicineService, Medicine } from '../../services/medicine.service';
-import { Firestore } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { collectionGroup, onSnapshot, Query } from 'firebase/firestore';
 import { NotificationService, NotificationItem } from '../../services/notification.service';
 import { OnDestroy } from '@angular/core';
 import { DialogService } from '../../services/dialog.service';
+import { AuthService } from '../../services/auth.service';
 
 type DashboardNotification = NotificationItem & { time?: string };
 
@@ -99,6 +100,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   currentUser: User = this.getEmptyUser();
   selectedRoleIndex: number = -1;
   systemUsers: SystemUser[] = [];
+  adminDisplayName = 'Admin';
+  adminEmail = '';
 
   constructor(
     private patientService: PatientService,
@@ -106,10 +109,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     private medicineService: MedicineService,
     private firestore: Firestore,
     private notificationService: NotificationService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.loadAdminProfile();
     this.loadPatientsData();
     this.loadSystemUsers();
     this.subscribeNotifications();
@@ -140,6 +145,24 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       }, (err) => console.error('Prescriptions realtime error', err));
     } catch (err) {
       console.error('Failed to subscribe to prescriptions collectionGroup', err);
+    }
+  }
+
+  private async loadAdminProfile(): Promise<void> {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      return;
+    }
+
+    this.adminEmail = user.email || '';
+    this.adminDisplayName = user.email?.split('@')[0] || 'Admin';
+
+    const userSnapshot = await getDoc(doc(this.firestore, 'users', user.uid));
+    if (userSnapshot.exists()) {
+      const displayName = userSnapshot.data()['displayName'];
+      if (displayName) {
+        this.adminDisplayName = displayName;
+      }
     }
   }
 
